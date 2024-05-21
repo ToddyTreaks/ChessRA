@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Script;
 using UnityEngine;
 
 #region Enums PiceType and Team
@@ -205,13 +206,13 @@ public class King : Piece
         // TODO FINIR LE ROCK
         if (firstMove)
         {
-            if (Board.board[0, actualPosition.yIndex].type == PieceType.ROCK) ;
+            if (Board.BoardArray[0, actualPosition.yIndex].type == PieceType.ROCK) ;
             {
-                Rock rock = (Rock)Board.board[0, actualPosition.yIndex];
+                Rock rock = (Rock)Board.BoardArray[0, actualPosition.yIndex];
                 if (rock.firstMove)
                 {
-                    if (Board.board[1, actualPosition.yIndex] == null &&
-                        Board.board[2, actualPosition.yIndex] == null && Board.board[3, actualPosition.yIndex] == null)
+                    if (Board.BoardArray[1, actualPosition.yIndex] == null &&
+                        Board.BoardArray[2, actualPosition.yIndex] == null && Board.BoardArray[3, actualPosition.yIndex] == null)
                     {
                         MovePiece(this, new Position(2, actualPosition.yIndex));
                         MovePiece(rock, new Position(3, actualPosition.yIndex));
