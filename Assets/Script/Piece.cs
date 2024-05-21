@@ -45,6 +45,7 @@ public abstract class Piece
     public Position actualPosition;
     public PieceType type;
     public Team team;
+    public List<Vector2> direction;
 
     public Piece(Position position, PieceType type, Team team)
     {
@@ -60,7 +61,7 @@ public abstract class Piece
 
     protected virtual List<Position> MoveAllowed()
     {
-        return new List<Position>();
+        return Board.CheckMove(this, direction);
     }
 
     public void MovePiece(Piece piece, Position targetPosition)
@@ -83,56 +84,24 @@ public class Pawn : Piece
 
     public Pawn(Position position, Team team) : base(position, PieceType.PAWN, team)
     {
+        if (team == Team.WHITE)
+        {
+            direction = new List<Vector2> { new Vector2(1, 0) };
+        }
+        else
+        {
+            direction = new List<Vector2> { new Vector2(-1, 0) };
+        }
     }
 
     protected override List<Position> MoveAllowed()
     {
-        List<Position> targetablePos = new List<Position>();
+        // TODO : Gérer le cas où le pion est bloqué par une autre pièce
+        // TODO : Gérer le cas où le pion peut prendre une pièce
+        // TODO : Gérer le cas où le pion peut prendre en passant
+        List<Position> allowedPos = Board.CheckMove(this, direction, 1);
 
-        if (team == Team.WHITE)
-        {
-            if (firstMove)
-            {
-                int distance = Board.CheckMoveUp(this, 2);
-                for (int i = 1; i < distance; i++)
-                {
-                    targetablePos.Add(new Position(this.actualPosition.xIndex + i, this.actualPosition.yIndex));
-                }
-
-                firstMove = false;
-            }
-            else
-            {
-                int distance = Board.CheckMoveUp(this, 1);
-                if (distance == 1)
-                {
-                    targetablePos.Add(new Position(this.actualPosition.xIndex + 1, this.actualPosition.yIndex));
-                }
-            }
-        }
-        else
-        {
-            if (firstMove)
-            {
-                int distance = Board.CheckMoveDown(this, 2);
-                for (int i = 1; i < distance; i++)
-                {
-                    targetablePos.Add(new Position(this.actualPosition.xIndex - i, this.actualPosition.yIndex));
-                }
-
-                firstMove = false;
-            }
-            else
-            {
-                int distance = Board.CheckMoveDown(this, 1);
-                if (distance == 1)
-                {
-                    targetablePos.Add(new Position(this.actualPosition.xIndex - 1, this.actualPosition.yIndex));
-                }
-            }
-        }
-
-        return targetablePos;
+        return allowedPos;
     }
 }
 
@@ -142,42 +111,11 @@ public class Pawn : Piece
 
 public class Rock : Piece
 {
-    private bool firstMove = true;
+    public bool firstMove = true;
 
     public Rock(Position position, Team team) : base(position, PieceType.ROCK, team)
     {
-    }
-
-    protected override List<Position> MoveAllowed()
-    {
-        List<Position> targetablePos = new List<Position>();
-
-        int distanceUp = Board.CheckMoveUp(this);
-        int distanceDown = Board.CheckMoveDown(this);
-        int distanceLeft = Board.CheckMoveLeft(this);
-        int distanceRight = Board.CheckMoveRight(this);
-
-        for (int i = 1; i < distanceUp; i++)
-        {
-            targetablePos.Add(new Position(this.actualPosition.xIndex + i, this.actualPosition.yIndex));
-        }
-
-        for (int i = 1; i < distanceDown; i++)
-        {
-            targetablePos.Add(new Position(this.actualPosition.xIndex - i, this.actualPosition.yIndex));
-        }
-
-        for (int i = 1; i < distanceLeft; i++)
-        {
-            targetablePos.Add(new Position(this.actualPosition.xIndex, this.actualPosition.yIndex - i));
-        }
-
-        for (int i = 1; i < distanceRight; i++)
-        {
-            targetablePos.Add(new Position(this.actualPosition.xIndex, this.actualPosition.yIndex + i));
-        }
-
-        return targetablePos;
+        direction = new List<Vector2> { new Vector2(1, 0), new Vector2(-1, 0), new Vector2(0, 1), new Vector2(0, -1) };
     }
 }
 
@@ -189,45 +127,16 @@ public class Knight : Piece
 {
     public Knight(Position position, Team team) : base(position, PieceType.KNIGHT, team)
     {
+        direction = new List<Vector2>
+        {
+            new Vector2(2, 1), new Vector2(2, -1), new Vector2(-2, 1), new Vector2(-2, -1), new Vector2(1, 2),
+            new Vector2(1, -2), new Vector2(-1, 2), new Vector2(-1, -2)
+        };
     }
 
     protected override List<Position> MoveAllowed()
     {
-        List<Position> targetablePos = new List<Position>();
-
-        List<Position> knightPos = KnightPos();
-
-        foreach (var pos in knightPos)
-        {
-            if (Board.board[pos.xIndex, pos.yIndex] == null || Board.board[pos.xIndex, pos.yIndex].team != this.team)
-                targetablePos.Add(pos);
-        }
-
-        return targetablePos;
-    }
-
-    private List<Position> KnightPos()
-    {
-        List<Position> knightPos = new List<Position>();
-
-        if (this.actualPosition.xIndex + 2 < 8 && this.actualPosition.yIndex + 1 < 8)
-            knightPos.Add(new Position(this.actualPosition.xIndex + 2, this.actualPosition.yIndex + 1));
-        if (this.actualPosition.xIndex + 2 < 8 && this.actualPosition.yIndex - 1 >= 0)
-            knightPos.Add(new Position(this.actualPosition.xIndex + 2, this.actualPosition.yIndex - 1));
-        if (this.actualPosition.xIndex - 2 >= 0 && this.actualPosition.yIndex + 1 < 8)
-            knightPos.Add(new Position(this.actualPosition.xIndex - 2, this.actualPosition.yIndex + 1));
-        if (this.actualPosition.xIndex - 2 >= 0 && this.actualPosition.yIndex - 1 >= 0)
-            knightPos.Add(new Position(this.actualPosition.xIndex - 2, this.actualPosition.yIndex - 1));
-        if (this.actualPosition.xIndex + 1 < 8 && this.actualPosition.yIndex + 2 < 8)
-            knightPos.Add(new Position(this.actualPosition.xIndex + 1, this.actualPosition.yIndex + 2));
-        if (this.actualPosition.xIndex + 1 < 8 && this.actualPosition.yIndex - 2 >= 0)
-            knightPos.Add(new Position(this.actualPosition.xIndex + 1, this.actualPosition.yIndex - 2));
-        if (this.actualPosition.xIndex - 1 >= 0 && this.actualPosition.yIndex + 2 < 8)
-            knightPos.Add(new Position(this.actualPosition.xIndex - 1, this.actualPosition.yIndex + 2));
-        if (this.actualPosition.xIndex - 1 >= 0 && this.actualPosition.yIndex - 2 >= 0)
-            knightPos.Add(new Position(this.actualPosition.xIndex - 1, this.actualPosition.yIndex - 2));
-
-        return KnightPos();
+        return Board.CheckMove(this, direction, 1);
     }
 }
 
@@ -239,38 +148,8 @@ public class Bishop : Piece
 {
     public Bishop(Position position, Team team) : base(position, PieceType.BISHOP, team)
     {
-    }
-
-    protected override List<Position> MoveAllowed()
-    {
-        List<Position> targetablePos = new List<Position>();
-
-        int distanceUpLeft = Board.CheckMoveUpLeft(this);
-        int distanceUpRight = Board.CheckMoveUpRight(this);
-        int distanceDownLeft = Board.CheckMoveDownLeft(this);
-        int distanceDownRight = Board.CheckMoveDownRight(this);
-
-        for (int i = 1; i < distanceUpLeft; i++)
-        {
-            targetablePos.Add(new Position(this.actualPosition.xIndex + i, this.actualPosition.yIndex - i));
-        }
-
-        for (int i = 1; i < distanceUpRight; i++)
-        {
-            targetablePos.Add(new Position(this.actualPosition.xIndex + i, this.actualPosition.yIndex + i));
-        }
-
-        for (int i = 1; i < distanceDownLeft; i++)
-        {
-            targetablePos.Add(new Position(this.actualPosition.xIndex - i, this.actualPosition.yIndex - i));
-        }
-
-        for (int i = 1; i < distanceDownRight; i++)
-        {
-            targetablePos.Add(new Position(this.actualPosition.xIndex - i, this.actualPosition.yIndex + i));
-        }
-
-        return targetablePos;
+        direction = new List<Vector2>
+            { new Vector2(1, 1), new Vector2(1, -1), new Vector2(-1, 1), new Vector2(-1, -1) };
     }
 }
 
@@ -282,62 +161,11 @@ public class Queen : Piece
 {
     public Queen(Position position, Team team) : base(position, PieceType.QUEEN, team)
     {
-    }
-
-    protected override List<Position> MoveAllowed()
-    {
-        List<Position> targetablePos = new List<Position>();
-
-        int distanceUp = Board.CheckMoveUp(this);
-        int distanceDown = Board.CheckMoveDown(this);
-        int distanceLeft = Board.CheckMoveLeft(this);
-        int distanceRight = Board.CheckMoveRight(this);
-        int distanceUpLeft = Board.CheckMoveUpLeft(this);
-        int distanceUpRight = Board.CheckMoveUpRight(this);
-        int distanceDownLeft = Board.CheckMoveDownLeft(this);
-        int distanceDownRight = Board.CheckMoveDownRight(this);
-
-        for (int i = 1; i < distanceUp; i++)
+        direction = new List<Vector2>
         {
-            targetablePos.Add(new Position(this.actualPosition.xIndex + i, this.actualPosition.yIndex));
-        }
-
-        for (int i = 1; i < distanceDown; i++)
-        {
-            targetablePos.Add(new Position(this.actualPosition.xIndex - i, this.actualPosition.yIndex));
-        }
-
-        for (int i = 1; i < distanceLeft; i++)
-        {
-            targetablePos.Add(new Position(this.actualPosition.xIndex, this.actualPosition.yIndex - i));
-        }
-
-        for (int i = 1; i < distanceRight; i++)
-        {
-            targetablePos.Add(new Position(this.actualPosition.xIndex, this.actualPosition.yIndex + i));
-        }
-
-        for (int i = 1; i < distanceUpLeft; i++)
-        {
-            targetablePos.Add(new Position(this.actualPosition.xIndex + i, this.actualPosition.yIndex - i));
-        }
-
-        for (int i = 1; i < distanceUpRight; i++)
-        {
-            targetablePos.Add(new Position(this.actualPosition.xIndex + i, this.actualPosition.yIndex + i));
-        }
-
-        for (int i = 1; i < distanceDownLeft; i++)
-        {
-            targetablePos.Add(new Position(this.actualPosition.xIndex - i, this.actualPosition.yIndex - i));
-        }
-
-        for (int i = 1; i < distanceDownRight; i++)
-        {
-            targetablePos.Add(new Position(this.actualPosition.xIndex - i, this.actualPosition.yIndex + i));
-        }
-
-        return targetablePos;
+            new Vector2(1, 0), new Vector2(-1, 0), new Vector2(0, 1), new Vector2(0, -1), new Vector2(1, 1),
+            new Vector2(1, -1), new Vector2(-1, 1), new Vector2(-1, -1)
+        };
     }
 }
 
@@ -351,62 +179,51 @@ public class King : Piece
 
     public King(Position position, Team team) : base(position, PieceType.KING, team)
     {
+        direction = new List<Vector2>
+        {
+            new Vector2(1, 0), new Vector2(-1, 0), new Vector2(0, 1), new Vector2(0, -1), new Vector2(1, 1),
+            new Vector2(1, -1), new Vector2(-1, 1), new Vector2(-1, -1)
+        };
     }
 
     protected override List<Position> MoveAllowed()
     {
-        List<Position> targetablePos = new List<Position>();
+        List<Position> allowedPos = Board.CheckMove(this, direction, 1);
 
-        int distanceUp = Board.CheckMoveUp(this, 1);
-        int distanceDown = Board.CheckMoveDown(this, 1);
-        int distanceLeft = Board.CheckMoveLeft(this, 1);
-        int distanceRight = Board.CheckMoveRight(this, 1);
-        int distanceUpLeft = Board.CheckMoveUpLeft(this, 1);
-        int distanceUpRight = Board.CheckMoveUpRight(this, 1);
-        int distanceDownLeft = Board.CheckMoveDownLeft(this, 1);
-        int distanceDownRight = Board.CheckMoveDownRight(this, 1);
+        // TODO : Gérer le cas où le déplacement du roi met le roi en échec
+        // TODO : Gérer le cas où le roi peut roquer
+        // TODO : Gérer le cas où le roi est en échec
+        // TODO : Gérer le cas où le roi est en échec et mat
+        // TODO : Gérer le cas où le roi est en pat
 
-        for (int i = 1; i < distanceUp; i++)
+
+        return allowedPos;
+    }
+
+    private void Rock()
+    {
+        // TODO FINIR LE ROCK
+        if (firstMove)
         {
-            targetablePos.Add(new Position(this.actualPosition.xIndex + i, this.actualPosition.yIndex));
+            if (Board.board[0, actualPosition.yIndex].type == PieceType.ROCK) ;
+            {
+                Rock rock = (Rock)Board.board[0, actualPosition.yIndex];
+                if (rock.firstMove)
+                {
+                    if (Board.board[1, actualPosition.yIndex] == null &&
+                        Board.board[2, actualPosition.yIndex] == null && Board.board[3, actualPosition.yIndex] == null)
+                    {
+                        MovePiece(this, new Position(2, actualPosition.yIndex));
+                        MovePiece(rock, new Position(3, actualPosition.yIndex));
+                    }
+                }
+            }
         }
+    }
 
-        for (int i = 1; i < distanceDown; i++)
-        {
-            targetablePos.Add(new Position(this.actualPosition.xIndex - i, this.actualPosition.yIndex));
-        }
-
-        for (int i = 1; i < distanceLeft; i++)
-        {
-            targetablePos.Add(new Position(this.actualPosition.xIndex, this.actualPosition.yIndex - i));
-        }
-
-        for (int i = 1; i < distanceRight; i++)
-        {
-            targetablePos.Add(new Position(this.actualPosition.xIndex, this.actualPosition.yIndex + i));
-        }
-
-        for (int i = 1; i < distanceUpLeft; i++)
-        {
-            targetablePos.Add(new Position(this.actualPosition.xIndex + i, this.actualPosition.yIndex - i));
-        }
-
-        for (int i = 1; i < distanceUpRight; i++)
-        {
-            targetablePos.Add(new Position(this.actualPosition.xIndex + i, this.actualPosition.yIndex + i));
-        }
-
-        for (int i = 1; i < distanceDownLeft; i++)
-        {
-            targetablePos.Add(new Position(this.actualPosition.xIndex - i, this.actualPosition.yIndex - i));
-        }
-
-        for (int i = 1; i < distanceDownRight; i++)
-        {
-            targetablePos.Add(new Position(this.actualPosition.xIndex - i, this.actualPosition.yIndex + i));
-        }
-
-        return targetablePos;
+    private void BigRock()
+    {
+        // TODO : Gérer le cas où le roi peut roquer grand roque
     }
 }
 

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 
 public class Board : MonoBehaviour
@@ -63,223 +65,40 @@ public class Board : MonoBehaviour
     }
     
     #endregion
+
+    #region CheckMove
     
-    #region CheckMoveDirection
-    
-    public static int CheckMoveUp(Piece inputPiece, int maxDistance = 7)
+    public static List<Position> CheckMove(Piece inputPiece, List<Vector2> direction, int maxDistance = 7)
     {
-        int x = inputPiece.actualPosition.xIndex;
-        int y = inputPiece.actualPosition.yIndex;
-
-        for (int i = 1; i <= maxDistance; i++)
+        List<Position> possibleMove = new List<Position>();
+        
+        foreach( Vector2 dir in direction )
         {
-            if (y + i > 7)
+            for (int i = 0; i <= maxDistance; i++)
             {
-                return i - 1; // Cas hors plateau
-            }
-
-            if (board[x, y + i] != null)
-            {
-                if (board[x, y + i].type == PieceType.PAWN)
+                int xMove = inputPiece.actualPosition.xIndex + (int)dir.x * i;
+                int yMove = inputPiece.actualPosition.yIndex + (int)dir.y * i;
+                
+                if (xMove < 0 || xMove > 7 || yMove < 0 || yMove > 7)
                 {
-                    return i - 1;
+                    break;
                 }
-                else if (board[x, y + i].team != inputPiece.team)
+                
+                if (board[xMove, yMove] != null)
                 {
-                    return i;
+                    if (board[xMove, yMove].team != inputPiece.team)
+                    {
+                        possibleMove.Add(new Position(xMove, yMove));
+                    }
+                    break;
                 }
-
-                return i - 1;
+                else
+                {
+                    possibleMove.Add(new Position(xMove, yMove));
+                }
             }
         }
-
-        throw new Exception("CheckMoveUp : déplacement impossible");
-    }
-
-    public static int CheckMoveDown(Piece inputPiece, int maxDistance = 7)
-    {
-        int x = inputPiece.actualPosition.xIndex;
-        int y = inputPiece.actualPosition.yIndex;
-
-        for (int i = 1; i <= maxDistance; i++)
-        {
-            if (y - i < 0)
-            {
-                return i - 1;
-            }
-
-            if (board[x, y - i] != null)
-            {
-                if (board[x, y - i].type == PieceType.PAWN)
-                {
-                    return i - 1;
-                }
-                else if (board[x, y - i].team != inputPiece.team)
-                {
-                    return i;
-                }
-
-                return i - 1;
-            }
-        }
-
-        throw new Exception("CheckMoveDown : déplacement impossible");
-    }
-
-    public static int CheckMoveRight(Piece inputPiece, int maxDistance = 7)
-    {
-        int x = inputPiece.actualPosition.xIndex;
-        int y = inputPiece.actualPosition.yIndex;
-
-        for (int i = 1; i <= maxDistance; i++)
-        {
-            if (x + i > 7)
-            {
-                return i - 1;
-            }
-
-            if (board[x + i, y] != null)
-            {
-                if (board[x + i, y].team != inputPiece.team)
-                {
-                    return i;
-                }
-
-                return i - 1;
-            }
-        }
-
-        throw new Exception("CheckMoveRight : déplacement impossible");
-    }
-
-    public static int CheckMoveLeft(Piece inputPiece, int maxDistance = 7)
-    {
-        int x = inputPiece.actualPosition.xIndex;
-        int y = inputPiece.actualPosition.yIndex;
-
-        for (int i = 1; i <= maxDistance; i++)
-        {
-            if (x - i < 0)
-            {
-                return i - 1;
-            }
-
-            if (board[x - i, y] != null)
-            {
-                if (board[x - i, y].team != inputPiece.team)
-                {
-                    return i;
-                }
-
-                return i - 1;
-            }
-        }
-
-        throw new Exception("CheckMoveLeft : déplacement impossible");
-    }
-
-    public static int CheckMoveUpRight(Piece inputPiece, int maxDistance = 7)
-    {
-        int x = inputPiece.actualPosition.xIndex;
-        int y = inputPiece.actualPosition.yIndex;
-
-        for (int i = 1; i <= maxDistance; i++)
-        {
-            if (x + i > 7 || y + i > 7)
-            {
-                return i - 1;
-            }
-
-            if (board[x + i, y + i] != null)
-            {
-                if (board[x + i, y + i].team != inputPiece.team)
-                {
-                    return i;
-                }
-
-                return i - 1;
-            }
-        }
-
-        throw new Exception("CheckMoveUpRight : déplacement impossible");
-    }
-
-    public static int CheckMoveUpLeft(Piece inputPiece, int maxDistance = 7)
-    {
-        int x = inputPiece.actualPosition.xIndex;
-        int y = inputPiece.actualPosition.yIndex;
-
-        for (int i = 1; i <= maxDistance; i++)
-        {
-            if (x - i < 0 || y + i > 7)
-            {
-                return i - 1;
-            }
-
-            if (board[x - i, y + i] != null)
-            {
-                if (board[x - i, y + i].team != inputPiece.team)
-                {
-                    return i;
-                }
-
-                return i - 1;
-            }
-        }
-
-        throw new Exception("CheckMoveUpLeft : déplacement impossible");
-    }
-
-    public static int CheckMoveDownRight(Piece inputPiece, int maxDistance = 7)
-    {
-        int x = inputPiece.actualPosition.xIndex;
-        int y = inputPiece.actualPosition.yIndex;
-
-        for (int i = 1; i <= maxDistance; i++)
-        {
-            if (x + i > 7 || y - i < 0)
-            {
-                return i - 1;
-            }
-
-            if (board[x + i, y - i] != null)
-            {
-                if (board[x + i, y - i].team != inputPiece.team)
-                {
-                    return i;
-                }
-
-                return i - 1;
-            }
-        }
-
-        throw new Exception("CheckMoveDownRight : déplacement impossible");
-    }
-
-    public static int CheckMoveDownLeft(Piece inputPiece, int maxDistance = 7)
-    {
-        int x = inputPiece.actualPosition.xIndex;
-        int y = inputPiece.actualPosition.yIndex;
-
-        for (int i = 1; i <= maxDistance; i++)
-        {
-            if (x - i < 0 || y - i < 0)
-            {
-                return i - 1;
-            }
-
-            if (board[x - i, y - i] != null)
-            {
-                if (board[x - i, y - i].team != inputPiece.team)
-                {
-                    return i;
-                }
-
-                return i - 1;
-            }
-        }
-
-        throw new Exception("CheckMoveDownLeft : déplacement impossible");
+        return possibleMove;
     }
     
     #endregion
