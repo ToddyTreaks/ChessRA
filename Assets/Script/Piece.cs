@@ -47,6 +47,7 @@ public abstract class Piece
     public PieceType type;
     public Team team;
     public List<Vector2> direction;
+    public List<Position> allowedPos;
 
     public Piece(Position position, PieceType type, Team team)
     {
@@ -62,15 +63,24 @@ public abstract class Piece
 
     protected virtual List<Position> MoveAllowed()
     {
-        return Board.CheckMove(this, direction);
+        allowedPos = Board.CheckMove(this, direction);
+        return allowedPos;
     }
 
     public void MovePiece(Piece piece, Position targetPosition)
     {
-        /*Attention si ça pète c'est ici*/
+    }
+
+    protected virtual void PieceMovement(Piece piece, Position targetPosition)
+    {
+        if (Board.BoardArray[targetPosition.xIndex, targetPosition.yIndex] != null)
+        {
+            Board.RemovePiece(targetPosition.xIndex, targetPosition.yIndex);
+        }
+
         Board.AddPiece(piece, targetPosition.xIndex, targetPosition.yIndex);
         Board.RemovePiece(piece.actualPosition.xIndex, piece.actualPosition.yIndex);
-        Debug.Log("Move Piece : Pièce déplacé & ça ne pète pas");
+        piece.actualPosition = targetPosition;
     }
 }
 
@@ -100,7 +110,7 @@ public class Pawn : Piece
         // TODO : Gérer le cas où le pion est bloqué par une autre pièce
         // TODO : Gérer le cas où le pion peut prendre une pièce
         // TODO : Gérer le cas où le pion peut prendre en passant
-        List<Position> allowedPos = Board.CheckMove(this, direction, 1);
+        allowedPos = Board.CheckMove(this, direction, 1);
 
         return allowedPos;
     }
@@ -189,7 +199,7 @@ public class King : Piece
 
     protected override List<Position> MoveAllowed()
     {
-        List<Position> allowedPos = Board.CheckMove(this, direction, 1);
+        allowedPos = Board.CheckMove(this, direction, 1);
 
         // TODO : Gérer le cas où le déplacement du roi met le roi en échec
         // TODO : Gérer le cas où le roi peut roquer
@@ -201,7 +211,7 @@ public class King : Piece
         return allowedPos;
     }
 
-    private void Rock()
+    private bool CanCastle()
     {
         // TODO FINIR LE ROCK
         if (firstMove)
@@ -212,7 +222,8 @@ public class King : Piece
                 if (rock.firstMove)
                 {
                     if (Board.BoardArray[1, actualPosition.yIndex] == null &&
-                        Board.BoardArray[2, actualPosition.yIndex] == null && Board.BoardArray[3, actualPosition.yIndex] == null)
+                        Board.BoardArray[2, actualPosition.yIndex] == null &&
+                        Board.BoardArray[3, actualPosition.yIndex] == null)
                     {
                         MovePiece(this, new Position(2, actualPosition.yIndex));
                         MovePiece(rock, new Position(3, actualPosition.yIndex));
@@ -220,6 +231,8 @@ public class King : Piece
                 }
             }
         }
+
+        return false;
     }
 
     private void BigRock()
