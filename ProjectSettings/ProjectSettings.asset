@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 26
-  productGUID: ae0f92ac7d1b1284c9a940b275a184b0
+  productGUID: 5845572339877f341b7e415b2cf8c982
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
-  productName: ChessRA
+  productName: Grosse beuteu
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -899,14 +899,14 @@ PlayerSettings:
   apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: ChessRA
+  metroPackageName: Grosse beuteu
   metroPackageVersion: 10.22.5.0
   metroCertificatePath: Assets\WSATestCertificate.pfx
   metroCertificatePassword: 
   metroCertificateSubject: Vuforia
   metroCertificateIssuer: Vuforia
   metroCertificateNotAfter: 80a428773e1cd501
-  metroApplicationDescription: ChessRA
+  metroApplicationDescription: Grosse beuteu
   wsaImages:
     65636: Assets/Common/Icons/UWP/StoreLogo.scale-100.png
     65661: Assets/Common/Icons/UWP/StoreLogo.scale-125.png
@@ -951,7 +951,6 @@ PlayerSettings:
   metroSplashScreenUseBackgroundColor: 1
   platformCapabilities:
     WindowsStoreApps:
-      CodeGeneration: False
       OfflineMapsManagement: False
       HumanInterfaceDevice: False
       Location: False
@@ -964,6 +963,7 @@ PlayerSettings:
       InternetClientServer: False
       VideosLibrary: False
       Objects3D: False
+      InternetClient: True
       RemoteSystem: False
       BlockedChatMessages: False
       PhoneCall: False
@@ -985,7 +985,7 @@ PlayerSettings:
       RecordedCallsFolder: False
       Contacts: False
       Proximity: False
-      InternetClient: True
+      CodeGeneration: False
       BackgroundMediaPlayback: False
       EnterpriseAuthentication: False
   metroTargetDeviceFamilies:
@@ -1048,11 +1048,11 @@ PlayerSettings:
   apiCompatibilityLevel: 3
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: 733ef5b2-e99a-4c6f-a3c5-83c2bfb0aab4
+  cloudProjectId: b76c9f4c-04ae-4f42-b07e-b07d8fac90c2
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
-  organizationId: unity_h9wluhjyn09rjq
+  projectName: Grosse beuteu
+  organizationId: surenzo
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 1
   hmiLoadingImage: {fileID: 0}
