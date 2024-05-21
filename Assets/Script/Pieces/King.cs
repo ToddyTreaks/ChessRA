@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Script;
 
-#region King
-
 public class King : Piece
 {
     #region Attributs
@@ -34,11 +32,12 @@ public class King : Piece
     {
         _allowedPos = Board.CheckMove(this, direction, 1);
 
+
+        // DONE : Gérer le cas où le roi peut roquer
         // TODO : Gérer le cas où le déplacement du roi met le roi en échec
-        // TODO : Gérer le cas où le roi peut roquer
         // TODO : Gérer le cas où le roi est en échec
         // TODO : Gérer le cas où le roi est en échec et mat
-        // TODO : Gérer le cas où le roi est en pat
+        // TODO : Gérer le cas où le roi est en pat ? (pas sûr) 
 
 
         return _allowedPos;
@@ -116,5 +115,3 @@ public class King : Piece
 
     #endregion
 }
-
-#endregion

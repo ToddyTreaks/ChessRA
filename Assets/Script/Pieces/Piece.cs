@@ -44,14 +44,15 @@ public class Position
 public abstract class Piece
 {
     #region Attributs
-    
+
     public Position actualPosition;
     public PieceType type;
     public Team team;
     public List<Vector2> direction;
-    
+    public List<Position> AttackPos;
+
     #endregion
-    
+
     #region Constructor
 
     public Piece(Position position, PieceType type, Team team)
@@ -60,9 +61,9 @@ public abstract class Piece
         this.type = type;
         this.team = team;
     }
-    
+
     #endregion
-    
+
     #region SelectionPhase
 
     public List<Position> SelectedPiece()
@@ -74,11 +75,11 @@ public abstract class Piece
     {
         return Board.CheckMove(this, direction);
     }
-    
+
     #endregion
-    
+
     #region MovementPhase
-    
+
     public void MovePiece(Piece piece, Position targetPosition)
     {
         PieceMovement(piece, targetPosition);
@@ -95,6 +96,23 @@ public abstract class Piece
         Board.RemovePiece(piece.actualPosition.xIndex, piece.actualPosition.yIndex);
         piece.actualPosition = targetPosition;
     }
+
+    #endregion
+
+    #region CaptureOpponentKing
+    public virtual bool CanCaptureOpponentKing()
+    {
+        AttackPos = MoveAllowed();
+        foreach (Position position in AttackPos)
+        {
+            if (Board.BoardArray[position.xIndex, position.yIndex].type == PieceType.KING)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
     
     #endregion
 }
@@ -108,7 +126,7 @@ public class Rock : Piece
     #region Attributs
 
     public readonly bool FirstMove = true;
-    
+
     #endregion
 
     #region Constructor
@@ -117,7 +135,7 @@ public class Rock : Piece
     {
         direction = new List<Vector2> { new Vector2(1, 0), new Vector2(-1, 0), new Vector2(0, 1), new Vector2(0, -1) };
     }
-    
+
     #endregion
 }
 
@@ -188,4 +206,3 @@ public class Queen : Piece
 }
 
 #endregion
-
