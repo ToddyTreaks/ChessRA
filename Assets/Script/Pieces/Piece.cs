@@ -43,11 +43,16 @@ public class Position
 
 public abstract class Piece
 {
+    #region Attributs
+    
     public Position actualPosition;
     public PieceType type;
     public Team team;
     public List<Vector2> direction;
-    public List<Position> allowedPos;
+    
+    #endregion
+    
+    #region Constructor
 
     public Piece(Position position, PieceType type, Team team)
     {
@@ -55,6 +60,10 @@ public abstract class Piece
         this.type = type;
         this.team = team;
     }
+    
+    #endregion
+    
+    #region SelectionPhase
 
     public List<Position> SelectedPiece()
     {
@@ -63,12 +72,16 @@ public abstract class Piece
 
     protected virtual List<Position> MoveAllowed()
     {
-        allowedPos = Board.CheckMove(this, direction);
-        return allowedPos;
+        return Board.CheckMove(this, direction);
     }
-
+    
+    #endregion
+    
+    #region MovementPhase
+    
     public void MovePiece(Piece piece, Position targetPosition)
     {
+        PieceMovement(piece, targetPosition);
     }
 
     protected virtual void PieceMovement(Piece piece, Position targetPosition)
@@ -82,38 +95,8 @@ public abstract class Piece
         Board.RemovePiece(piece.actualPosition.xIndex, piece.actualPosition.yIndex);
         piece.actualPosition = targetPosition;
     }
-}
-
-#endregion
-
-#region Pawn
-
-public class Pawn : Piece
-{
-    private bool firstMove = true;
-    private bool canTake = false;
-
-    public Pawn(Position position, Team team) : base(position, PieceType.PAWN, team)
-    {
-        if (team == Team.WHITE)
-        {
-            direction = new List<Vector2> { new Vector2(1, 0) };
-        }
-        else
-        {
-            direction = new List<Vector2> { new Vector2(-1, 0) };
-        }
-    }
-
-    protected override List<Position> MoveAllowed()
-    {
-        // TODO : Gérer le cas où le pion est bloqué par une autre pièce
-        // TODO : Gérer le cas où le pion peut prendre une pièce
-        // TODO : Gérer le cas où le pion peut prendre en passant
-        allowedPos = Board.CheckMove(this, direction, 1);
-
-        return allowedPos;
-    }
+    
+    #endregion
 }
 
 #endregion
@@ -122,12 +105,20 @@ public class Pawn : Piece
 
 public class Rock : Piece
 {
-    public bool firstMove = true;
+    #region Attributs
+
+    public readonly bool FirstMove = true;
+    
+    #endregion
+
+    #region Constructor
 
     public Rock(Position position, Team team) : base(position, PieceType.ROCK, team)
     {
         direction = new List<Vector2> { new Vector2(1, 0), new Vector2(-1, 0), new Vector2(0, 1), new Vector2(0, -1) };
     }
+    
+    #endregion
 }
 
 #endregion
@@ -136,6 +127,8 @@ public class Rock : Piece
 
 public class Knight : Piece
 {
+    #region Constructor
+
     public Knight(Position position, Team team) : base(position, PieceType.KNIGHT, team)
     {
         direction = new List<Vector2>
@@ -145,10 +138,16 @@ public class Knight : Piece
         };
     }
 
+    #endregion
+
+    #region MoveAllowed
+
     protected override List<Position> MoveAllowed()
     {
         return Board.CheckMove(this, direction, 1);
     }
+
+    #endregion
 }
 
 #endregion
@@ -157,11 +156,15 @@ public class Knight : Piece
 
 public class Bishop : Piece
 {
+    #region Constructor
+
     public Bishop(Position position, Team team) : base(position, PieceType.BISHOP, team)
     {
         direction = new List<Vector2>
             { new Vector2(1, 1), new Vector2(1, -1), new Vector2(-1, 1), new Vector2(-1, -1) };
     }
+
+    #endregion
 }
 
 #endregion
@@ -170,6 +173,8 @@ public class Bishop : Piece
 
 public class Queen : Piece
 {
+    #region Constructor
+
     public Queen(Position position, Team team) : base(position, PieceType.QUEEN, team)
     {
         direction = new List<Vector2>
@@ -178,67 +183,9 @@ public class Queen : Piece
             new Vector2(1, -1), new Vector2(-1, 1), new Vector2(-1, -1)
         };
     }
+
+    #endregion
 }
 
 #endregion
 
-#region King
-
-public class King : Piece
-{
-    private bool firstMove = true;
-
-    public King(Position position, Team team) : base(position, PieceType.KING, team)
-    {
-        direction = new List<Vector2>
-        {
-            new Vector2(1, 0), new Vector2(-1, 0), new Vector2(0, 1), new Vector2(0, -1), new Vector2(1, 1),
-            new Vector2(1, -1), new Vector2(-1, 1), new Vector2(-1, -1)
-        };
-    }
-
-    protected override List<Position> MoveAllowed()
-    {
-        allowedPos = Board.CheckMove(this, direction, 1);
-
-        // TODO : Gérer le cas où le déplacement du roi met le roi en échec
-        // TODO : Gérer le cas où le roi peut roquer
-        // TODO : Gérer le cas où le roi est en échec
-        // TODO : Gérer le cas où le roi est en échec et mat
-        // TODO : Gérer le cas où le roi est en pat
-
-
-        return allowedPos;
-    }
-
-    private bool CanCastle()
-    {
-        // TODO FINIR LE ROCK
-        if (firstMove)
-        {
-            if (Board.BoardArray[0, actualPosition.yIndex].type == PieceType.ROCK) ;
-            {
-                Rock rock = (Rock)Board.BoardArray[0, actualPosition.yIndex];
-                if (rock.firstMove)
-                {
-                    if (Board.BoardArray[1, actualPosition.yIndex] == null &&
-                        Board.BoardArray[2, actualPosition.yIndex] == null &&
-                        Board.BoardArray[3, actualPosition.yIndex] == null)
-                    {
-                        MovePiece(this, new Position(2, actualPosition.yIndex));
-                        MovePiece(rock, new Position(3, actualPosition.yIndex));
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
-    private void BigRock()
-    {
-        // TODO : Gérer le cas où le roi peut roquer grand roque
-    }
-}
-
-#endregion
