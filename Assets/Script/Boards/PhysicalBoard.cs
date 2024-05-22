@@ -16,6 +16,20 @@ public class PieceDic
 
 public class PhysicalBoard : MonoBehaviour
 {
+    
+    private PhysicalBoard _instance;
+    // Start is called before the first frame update
+    void Awake()
+    {
+        if(_instance == null)
+        {
+            _instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+    }
     /*
      * Instantiate the pieces on the board
      * Gestion de movePiece
@@ -34,7 +48,7 @@ public class PhysicalBoard : MonoBehaviour
     private List<GameObject> _previewBlocks;
     private GameObject _selectedPiece;
 
-    private void Awake()
+    private void Start()
     {
         _xDir = direction.position.x - origin.position.x;
         _zDir = direction.position.z - origin.position.z;

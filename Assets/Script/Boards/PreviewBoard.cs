@@ -4,10 +4,18 @@ using UnityEngine;
 
 public class PreviewBoard : MonoBehaviour
 {
+    private PreviewBoard _instance;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        
+        if(_instance == null)
+        {
+            _instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
     }
 
     // Update is called once per frame

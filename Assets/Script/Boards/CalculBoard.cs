@@ -4,6 +4,19 @@ using UnityEngine;
 
 public class CalculBoard : MonoBehaviour
 {
+    private CalculBoard _instance;
+    // Start is called before the first frame update
+    void Awake()
+    {
+        if(_instance == null)
+        {
+            _instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+    }
     /*
      * Attributs : tableau de enum de type de pièce & team
      *
