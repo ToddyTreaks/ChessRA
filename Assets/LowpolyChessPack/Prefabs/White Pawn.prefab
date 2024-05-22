@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 473602}
   - component: {fileID: 3398312}
   - component: {fileID: 2328314}
+  - component: {fileID: -4708914459885160497}
   - component: {fileID: 6441710}
   m_Layer: 6
   m_Name: White Pawn
@@ -84,6 +85,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &-4708914459885160497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 104878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a05abcd7f559a3243b2aacea83ce4b8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  team: 0
+  prefabModel: {fileID: 0}
 --- !u!64 &6441710
 MeshCollider:
   m_ObjectHideFlags: 0

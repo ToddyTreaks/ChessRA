@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 422114}
   - component: {fileID: 3379130}
   - component: {fileID: 2300604}
+  - component: {fileID: -3907117093043483444}
   - component: {fileID: 6438220}
   m_Layer: 6
   m_Name: White King
@@ -84,6 +85,22 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &-3907117093043483444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 119820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ef5335e9f898094d808a15bcf484cae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  team: 0
+  prefabModel: {fileID: 0}
+  firstMove: 0
+  mayCastle: 0
 --- !u!64 &6438220
 MeshCollider:
   m_ObjectHideFlags: 0

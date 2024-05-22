@@ -52,6 +52,7 @@ namespace Script.Boards
                        position: new Vector3(i, 0, -j),
                        rotation: Quaternion.identity,
                        parent: parent);
+                    piece.GetComponent<Piece>().team = i > 4 ? Team.BLACK : Team.WHITE;
                     piece.GetComponent<MeshRenderer>().sharedMaterial = i >4? blackMaterial : piecesPrefab[0].GetComponent<MeshRenderer>().sharedMaterial;
                     Array[i, j] = piece;
                 }
@@ -86,6 +87,8 @@ namespace Script.Boards
         public void MovePiece(Position position)
         {
             if (selectedPosition.IsUnityNull()) return;
+            parent.transform.localScale = new Vector3((float)1, (float)1, (float)1);
+            Debug.Log("tamere la tchoin tu va bouger");
             Piece piece = Array[selectedPosition.xIndex, selectedPosition.yIndex].GetComponent<Piece>();
             if (piece is King)
             {
@@ -113,14 +116,19 @@ namespace Script.Boards
             {
                 Pawn pawn = (Pawn)piece;
                 pawn.Promote();
+                
+                parent.transform.localScale = new Vector3((float)0.015, (float)0.015, (float)0.015);
                 return;
             }
 
-            Destroy(Array[position.xIndex, position.yIndex]);
+            if (!Array[position.xIndex, position.yIndex].IsUnityNull())
+                Array[position.xIndex, position.yIndex].SetActive(false);
+            
             Array[selectedPosition.xIndex, selectedPosition.yIndex].transform.position =
                 new Vector3(position.xIndex, 0, -position.yIndex);
             Array[position.xIndex, position.yIndex] = Array[selectedPosition.xIndex, selectedPosition.yIndex];
             Array[selectedPosition.xIndex, selectedPosition.yIndex] = null;
+            parent.transform.localScale = new Vector3((float)0.015, (float)0.015, (float)0.015);
         }
 
         public Position WhatIsPosition(GameObject piece)

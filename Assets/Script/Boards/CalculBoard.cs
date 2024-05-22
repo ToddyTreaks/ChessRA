@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using Script;
 using Script.Boards;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /*
@@ -39,6 +40,7 @@ public class CalculBoard : MonoBehaviour
         List<Position> possibleMove = new List<Position>();
         inputPiece = PhysicalBoard.Instance.Array[positionSelected.xIndex, positionSelected.yIndex]
             .GetComponent<Piece>();
+        Debug.Log(inputPiece);
 
         if (inputPiece == null)
         {
@@ -65,7 +67,7 @@ public class CalculBoard : MonoBehaviour
             DirectionMoveAllowed(positionSelected, possibleMove, maxDistance);
         }
 
-        return KingNotInCheck(positionSelected, possibleMove);
+        return possibleMove;
     }
 
     private void PawnMoveAllowed(Position positionSelected, List<Position> possibleMove)
@@ -102,6 +104,7 @@ public class CalculBoard : MonoBehaviour
 
         int xMove = positionSelected.xIndex + (int)inputPiece.direction[0].x;
         int yMove = positionSelected.yIndex + (int)inputPiece.direction[0].y + 1;
+        if (yMove < 0 || yMove > 7) return;
         if (PhysicalBoard.Instance.Array[xMove, yMove] != null &&
             PhysicalBoard.Instance.Array[xMove, yMove].GetComponent<Piece>().team != inputPiece.team)
         {
@@ -109,6 +112,7 @@ public class CalculBoard : MonoBehaviour
         }
 
         yMove = positionSelected.yIndex + (int)inputPiece.direction[0].y - 1;
+        if (yMove < 0 || yMove > 7) return;
         if (PhysicalBoard.Instance.Array[xMove, yMove] != null &&
             PhysicalBoard.Instance.Array[xMove, yMove].GetComponent<Piece>().team != inputPiece.team)
         {
@@ -189,7 +193,7 @@ public class CalculBoard : MonoBehaviour
     }
 
 
-    public static List<Position> KingNotInCheck(Position selectedPosition, List<Position> possiblePosition)
+    public List<Position> KingNotInCheck(Position selectedPosition, List<Position> possiblePosition)
     {
         List<Position> legalMove = new List<Position>();
         GameObject pieceGameObject = PhysicalBoard.Instance.Array[selectedPosition.xIndex, selectedPosition.yIndex];
@@ -215,6 +219,7 @@ public class CalculBoard : MonoBehaviour
     {
         foreach (GameObject pieceGameObject in PhysicalBoard.Instance.Array)
         {
+            if (pieceGameObject.IsUnityNull()) continue;
             Piece piece = pieceGameObject.GetComponent<Piece>();
             if (pieceGameObject != null && piece.team != team)
             {
