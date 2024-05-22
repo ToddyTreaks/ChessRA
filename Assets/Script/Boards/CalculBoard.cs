@@ -4,19 +4,6 @@ using UnityEngine;
 
 public class CalculBoard : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    
-    
     /*
      * Attributs : tableau de enum de type de pièce & team
      *
