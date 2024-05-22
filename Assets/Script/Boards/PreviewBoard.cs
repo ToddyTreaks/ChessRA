@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 /*
  * Attributs : Prefab de preview, tableau de preview, liste de positionscontenant les positions des previews activé
@@ -13,18 +14,18 @@ using UnityEngine;
  */
 public class PreviewBoard : MonoBehaviour
 {
-    [SerializeField] private GameObject _previewBlock;
+    [SerializeField] private GameObject previewBlock;
     
-    public static PreviewBoard _instance;
-    public static GameObject[,] _previewBoards;
+    public static PreviewBoard Instance;
+    public  GameObject[,] PreviewBoards;
     
-    private List<GameObject> _previewBlocks;
+    private  List<GameObject> _previewBlocks;
     // Start is called before the first frame update
     void Awake()
     {
-        if(_instance == null)
+        if(Instance == null)
         {
-            _instance = this;
+            Instance = this;
         }
         else
         {
@@ -35,14 +36,14 @@ public class PreviewBoard : MonoBehaviour
     void Start()
     {
         _previewBlocks = new List<GameObject>();
-        _previewBoards = new GameObject[8, 8];
+        PreviewBoards = new GameObject[8, 8];
         for (int i = 0; i < 8; i++)
         {
             for (int j = 0; j < 8; j++)
             {
-                GameObject preview = Instantiate(_previewBlock, new Vector3(i, 0, j), Quaternion.identity);
+                GameObject preview = Instantiate(previewBlock, new Vector3(i, 0, j), Quaternion.identity);
                 preview.SetActive(false);
-                _previewBoards[i, j] = preview;
+                PreviewBoards[i, j] = preview;
             }
         }
     }
@@ -51,8 +52,8 @@ public class PreviewBoard : MonoBehaviour
     {
         foreach (Position pos in positions)
         {
-            _previewBoards[pos.xIndex, pos.yIndex].SetActive(true);
-            _previewBlocks.Add(_previewBoards[pos.xIndex, pos.yIndex]);
+            PreviewBoards[pos.xIndex, pos.yIndex].SetActive(true);
+            _previewBlocks.Add(PreviewBoards[pos.xIndex, pos.yIndex]);
         }
     }
     
@@ -63,5 +64,17 @@ public class PreviewBoard : MonoBehaviour
             preview.SetActive(false);
         }
         _previewBlocks.Clear();
+    }
+    public Position WhatIsPosition(GameObject piece)
+    {
+        for (var i = 0; i < 8; i++)
+        {
+            for (var j = 0; j < 8; j++)
+            {
+                if (PreviewBoards[i, j] == piece)
+                    return new Position(i, j);
+            }
+        }
+        return new Position(-1, -1);
     }
 }

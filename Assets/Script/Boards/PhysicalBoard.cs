@@ -21,8 +21,8 @@ namespace Script.Boards
         [SerializeField] private List<GameObject> piecesPrefab;
         [SerializeField] private Material blackMaterial;
 
-        public static Position selectedPosition;
-        public static GameObject[,] Array;
+        public  Position selectedPosition;
+        public  GameObject[,] Array;
         public static PhysicalBoard Instance;
 
         void Awake()
@@ -72,7 +72,7 @@ namespace Script.Boards
             return null;
         }
 
-        public static void MovePiece(Position position)
+        public void MovePiece(Position position)
         {
             if (selectedPosition.IsUnityNull()) return;
             Destroy(Array[position.xIndex,position.yIndex]);
@@ -82,7 +82,7 @@ namespace Script.Boards
             Array[selectedPosition.xIndex, selectedPosition.yIndex] = null;
         }
 
-        public static Position WhatIsPosition(GameObject piece)
+        public Position WhatIsPosition(GameObject piece)
         {
             for (var i = 0; i < 8; i++)
             {
