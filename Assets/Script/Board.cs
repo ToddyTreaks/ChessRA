@@ -128,6 +128,8 @@ namespace Script
                 return true;
             }
 
+            BoardArray[piece.actualPosition.xIndex, piece.actualPosition.yIndex] = piece;
+            BoardArray[targetPosition.xIndex, targetPosition.yIndex] = savedPiece;
             return false;
         }
 
