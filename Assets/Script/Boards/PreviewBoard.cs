@@ -15,6 +15,7 @@ using UnityEngine.Serialization;
 public class PreviewBoard : MonoBehaviour
 {
     [SerializeField] private GameObject previewBlock;
+    [SerializeField] private Transform parent;
     
     public static PreviewBoard Instance;
     public  GameObject[,] PreviewBoards;
@@ -41,11 +42,16 @@ public class PreviewBoard : MonoBehaviour
         {
             for (int j = 0; j < 8; j++)
             {
-                GameObject preview = Instantiate(previewBlock, new Vector3(i, 0, j), Quaternion.identity);
+                GameObject preview = Instantiate(
+                    original: previewBlock, 
+                    position: new Vector3(i, 0, -j),
+                    rotation: Quaternion.identity,
+                    parent: parent);
                 preview.SetActive(false);
                 PreviewBoards[i, j] = preview;
             }
         }
+        parent.transform.localScale = new Vector3((float)0.015, (float)0.015, (float)0.015);
     }
 
     public void ShowPos(List<Position> positions)

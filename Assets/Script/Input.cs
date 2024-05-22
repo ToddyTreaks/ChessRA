@@ -8,14 +8,9 @@ public class Input : MonoBehaviour
     // layer mask for the pieces
     [SerializeField] private LayerMask _pieceLayer;
     [SerializeField] private LayerMask _previewLayer;
+    [SerializeField] private Camera _camera;
 
     private Piece _selectedPiece;
-    private Camera _camera;
-
-    private void Start()
-    {
-        _camera = Camera.main;
-    }
 
     private void Update()
     {
@@ -28,7 +23,7 @@ public class Input : MonoBehaviour
             }
             else if (Physics.Raycast(ray, hitInfo: out RaycastHit hitPiece, Mathf.Infinity, _pieceLayer))
             {
-                GameManager.Instance.SelectPiece(hitPreview.collider.gameObject);
+                GameManager.Instance.SelectPiece(hitPiece.collider.gameObject);
             }
             else
             {

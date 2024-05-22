@@ -20,6 +20,7 @@ namespace Script.Boards
          */
         [SerializeField] private List<GameObject> piecesPrefab;
         [SerializeField] private Material blackMaterial;
+        [SerializeField] private Transform parent;
 
         public Position selectedPosition;
         public GameObject[,] Array;
@@ -45,14 +46,17 @@ namespace Script.Boards
                 for (int j = 0; j < 8; j++)
                 {
                     GameObject toCopy = CreatePiece(i, j);
-                    if (toCopy.IsUnityNull()) continue;
-                    GameObject piece = Instantiate(toCopy, new Vector3(i, 0, j), Quaternion.identity);
-                    piece.GetComponent<MeshRenderer>().material = (i + j) % 2 == 0
-                        ? blackMaterial
-                        : piecesPrefab[0].GetComponent<MeshRenderer>().material;
+                    if(toCopy.IsUnityNull()) continue;
+                    GameObject piece = Instantiate( 
+                       original: toCopy,
+                       position: new Vector3(i, 0, -j),
+                       rotation: Quaternion.identity,
+                       parent: parent);
+                    piece.GetComponent<MeshRenderer>().sharedMaterial = i >4? blackMaterial : piecesPrefab[0].GetComponent<MeshRenderer>().sharedMaterial;
                     Array[i, j] = piece;
                 }
             }
+            parent.transform.localScale = new Vector3((float)0.015, (float)0.015, (float)0.015);
         }
 
         private GameObject CreatePiece(int line, int col)
@@ -63,14 +67,11 @@ namespace Script.Boards
                 case 7:
                     switch (col)
                     {
-                        case 0:
-                        case 7: return piecesPrefab[1];
-                        case 1:
-                        case 6: return piecesPrefab[2];
-                        case 2:
-                        case 5: return piecesPrefab[3];
-                        case 4: return piecesPrefab[4];
-                        case 3: return piecesPrefab[5];
+                        case 0: case 7: return piecesPrefab[1];
+                        case 1: case 6: return piecesPrefab[2];
+                        case 2: case 5: return piecesPrefab[3];
+                        case 3:         return piecesPrefab[4];
+                        case 4:         return piecesPrefab[5];
                     }
 
                     break;
@@ -117,7 +118,7 @@ namespace Script.Boards
 
             Destroy(Array[position.xIndex, position.yIndex]);
             Array[selectedPosition.xIndex, selectedPosition.yIndex].transform.position =
-                new Vector3(position.xIndex, 0, position.yIndex);
+                new Vector3(position.xIndex, 0, -position.yIndex);
             Array[position.xIndex, position.yIndex] = Array[selectedPosition.xIndex, selectedPosition.yIndex];
             Array[selectedPosition.xIndex, selectedPosition.yIndex] = null;
         }

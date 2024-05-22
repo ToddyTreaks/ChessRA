@@ -40,6 +40,7 @@ namespace Script
 
         public void MovePiece(GameObject colliderGameObject)
         {
+            Debug.Log("move");
             Position newPosition = PreviewBoard.Instance.WhatIsPosition(colliderGameObject);
             
             PhysicalBoard.Instance.MovePiece(newPosition);
@@ -48,13 +49,17 @@ namespace Script
 
         public void SelectPiece(GameObject colliderGameObject)
         {
+            Debug.Log("select");
             Position positionPiece = PhysicalBoard.Instance.WhatIsPosition(colliderGameObject);
+            Debug.Log("selected position x : " + positionPiece.xIndex + " y " + positionPiece.yIndex );
             List<Position> everyPossiblePosition = CalculBoard._instance.MoveAllowed(positionPiece);
+            Debug.Log(" number of possible posistions " + everyPossiblePosition.Count );
             PreviewBoard.Instance.ShowPos(everyPossiblePosition);
         }
 
         public void Nothing()
         {
+            Debug.Log("nothing");
             PreviewBoard.Instance.ClearPreview();
         }
     }
