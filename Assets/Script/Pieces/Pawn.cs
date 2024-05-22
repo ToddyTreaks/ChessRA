@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Transactions;
 using UnityEngine;
 using Script;
+using UnityEditor;
 using UnityEngine.UIElements;
 
 
@@ -38,13 +40,13 @@ public class Pawn : Piece
 
     #region MoveAllowed
 
-    protected override List<Position> MoveAllowed()
+    protected override List<Position> PieceAllowedMove()
     {
         // DONE : Gérer le cas où le pion peut avancer de 2 cases
         // DONE : Gérer le cas où le pion est bloqué par une autre pièce
         // DONE : Gérer le cas où le pion peut prendre une pièce
         // TODO : Gérer le cas où le pion peut prendre en passant
-        // TODO : Gérer le cas où le pion est promu
+        // TODO : Gérer le cas où le pion est promu | Commencer dans la fonction Promote()
         allowedPos = Board.CheckMove(this, this.firstMove ? 2 : 1, false);
         CanCapture(captureLeft);
         CanCapture(captureRight);
@@ -66,5 +68,24 @@ public class Pawn : Piece
     }
 
     #endregion
-    
+
+    protected override void PieceMovement(Piece piece, Position targetPosition)
+    {
+        if (targetPosition.xIndex == 0 || targetPosition.xIndex == 7)
+        {
+            Promote();
+        }
+
+        base.PieceMovement(piece, targetPosition);
+    }
+
+    private void Promote()
+    {
+        Board.RemovePiece(this.actualPosition.xIndex, this.actualPosition.yIndex);
+        Board.AddPiece(new Queen(this.actualPosition, this.team), this.actualPosition.xIndex,
+            this.actualPosition.yIndex);
+
+        // TODO : Gérer le cas où le pion est promu en autre chose qu'une reine
+        // TODO : Gérer la destruction du pion ( on fait hériter Piece de MonoBehaviour ou pas ? )
+    }
 }

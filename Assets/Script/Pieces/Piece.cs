@@ -50,6 +50,7 @@ public abstract class Piece
     public Team team;
     public List<Vector2> direction;
     public List<Position> allowedPositionsForNextMove;
+    [SerializeField] private GameObject piecePrefab;
 
     #endregion
 
@@ -69,7 +70,7 @@ public abstract class Piece
     public List<Position> GetMoveSelectedPiece()
     {
         allowedPositionsForNextMove = null;
-        List<Position> possiblePositions = MoveAllowed();
+        List<Position> possiblePositions = PieceAllowedMove();
         foreach (Position targetPosition in possiblePositions)
         {
             if (Board.NotPuttingKingInCheck(this, targetPosition))
@@ -81,7 +82,7 @@ public abstract class Piece
         return allowedPositionsForNextMove;
     }
 
-    protected virtual List<Position> MoveAllowed()
+    protected virtual List<Position> PieceAllowedMove()
     {
         return Board.CheckMove(this);
     }
@@ -94,6 +95,7 @@ public abstract class Piece
     {
         if (allowedPositionsForNextMove.Contains(targetPosition))
             PieceMovement(piece, targetPosition);
+        else throw new Exception("This move is not allowed");
     }
 
     protected virtual void PieceMovement(Piece piece, Position targetPosition)
@@ -154,7 +156,7 @@ public class Knight : Piece
 
     #region MoveAllowed
 
-    protected override List<Position> MoveAllowed()
+    protected override List<Position> PieceAllowedMove()
     {
         return Board.CheckMove(this, 1);
     }

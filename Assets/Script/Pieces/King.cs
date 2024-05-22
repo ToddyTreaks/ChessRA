@@ -28,7 +28,7 @@ public class King : Piece
 
     #region MoveAllowed
 
-    protected override List<Position> MoveAllowed()
+    protected override List<Position> PieceAllowedMove()
     {
         _allowedPos = Board.CheckMove(this, 1);
 
