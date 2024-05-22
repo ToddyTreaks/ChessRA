@@ -49,7 +49,7 @@ public abstract class Piece
     public PieceType type;
     public Team team;
     public List<Vector2> direction;
-    public List<Position> AttackPos;
+    public List<Position> allowedPositionsForNextMove;
 
     #endregion
 
@@ -68,17 +68,17 @@ public abstract class Piece
 
     public List<Position> GetMoveSelectedPiece()
     {
+        allowedPositionsForNextMove = null;
         List<Position> possiblePositions = MoveAllowed();
-        List<Position> allowedPositions = null;
         foreach (Position targetPosition in possiblePositions)
         {
             if (Board.NotPuttingKingInCheck(this, targetPosition))
             {
-                allowedPositions.Add(targetPosition);
+                allowedPositionsForNextMove.Add(targetPosition);
             }
         }
 
-        return allowedPositions;
+        return allowedPositionsForNextMove;
     }
 
     protected virtual List<Position> MoveAllowed()
@@ -92,7 +92,7 @@ public abstract class Piece
 
     public void MovePiece(Piece piece, Position targetPosition)
     {
-        if (MoveAllowed().Contains(targetPosition))
+        if (allowedPositionsForNextMove.Contains(targetPosition))
             PieceMovement(piece, targetPosition);
     }
 
