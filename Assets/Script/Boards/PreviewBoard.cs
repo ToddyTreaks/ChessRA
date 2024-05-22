@@ -2,6 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * Attributs : Prefab de preview, tableau de preview, liste de positionscontenant les positions des previews activé
+ *
+ * Initialise les previews blocs ( au start on fait 64 case et on les désactive, distance x : 1 & z : 1 /!\ On fait en localposition)
+ *
+ * Fonction qui pour une liste de position affiche les positions
+ * Fonction qui clear le tableau de preview
+ *
+ */
 public class PreviewBoard : MonoBehaviour
 {
     [SerializeField] private GameObject _previewBlock;
@@ -42,7 +51,8 @@ public class PreviewBoard : MonoBehaviour
     {
         foreach (Position pos in positions)
         {
-            
+            _previewBoards[pos.xIndex, pos.yIndex].SetActive(true);
+            _previewBlocks.Add(_previewBoards[pos.xIndex, pos.yIndex]);
         }
     }
     
@@ -52,14 +62,6 @@ public class PreviewBoard : MonoBehaviour
         {
             preview.SetActive(false);
         }
+        _previewBlocks.Clear();
     }
-    /*
-     * Attributs : Prefab de preview, tableau de preview, liste de positionscontenant les positions des previews activé
-     * 
-     * Initialise les previews blocs ( au start on fait 64 case et on les désactive, distance x : 1 & z : 1 /!\ On fait en localposition)
-     * 
-     * Fonction qui pour une liste de position affiche les positions
-     * Fonction qui clear le tableau de preview
-     * 
-     */
 }
