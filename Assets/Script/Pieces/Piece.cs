@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Script;
+using Unity.VisualScripting;
 using UnityEngine;
 
 #region Enums PiceType and Team
@@ -39,9 +40,8 @@ public class Position
 
 #endregion
 
-#region MotherClass Piece
 
-public abstract class Piece
+public abstract class Piece : MonoBehaviour
 {
     #region Attributs
 
@@ -54,17 +54,6 @@ public abstract class Piece
 
     #endregion
 
-    #region Constructor
-
-    public Piece(Position position, PieceType type, Team team)
-    {
-        actualPosition = position;
-        this.type = type;
-        this.team = team;
-    }
-
-    #endregion
-
     #region SelectionPhase
 
     public List<Position> GetMoveSelectedPiece()
@@ -74,7 +63,9 @@ public abstract class Piece
         foreach (Position targetPosition in possiblePositions)
         {
             allowedPositionsForNextMove.Add(targetPosition);
+            // TODO : Enlever le commentaire suivant
             //if (Board.NotPuttingKingInCheck(this, targetPosition))
+                //allowedPositionsForNextMove.Add(targetPosition);
         }
 
         return allowedPositionsForNextMove;
@@ -110,93 +101,3 @@ public abstract class Piece
 
     #endregion
 }
-
-#endregion
-
-#region Rock
-
-public class Rock : Piece
-{
-    #region Attributs
-
-    public readonly bool FirstMove = true;
-
-    #endregion
-
-    #region Constructor
-
-    public Rock(Position position, Team team) : base(position, PieceType.ROCK, team)
-    {
-        direction = new List<Vector2> { new Vector2(1, 0), new Vector2(-1, 0), new Vector2(0, 1), new Vector2(0, -1) };
-    }
-
-    #endregion
-}
-
-#endregion
-
-#region Knight
-
-public class Knight : Piece
-{
-    #region Constructor
-
-    public Knight(Position position, Team team) : base(position, PieceType.KNIGHT, team)
-    {
-        direction = new List<Vector2>
-        {
-            new Vector2(2, 1), new Vector2(2, -1), new Vector2(-2, 1), new Vector2(-2, -1), new Vector2(1, 2),
-            new Vector2(1, -2), new Vector2(-1, 2), new Vector2(-1, -2)
-        };
-    }
-
-    #endregion
-
-    #region MoveAllowed
-
-    protected override List<Position> PieceAllowedMove()
-    {
-        return Board.CheckMove(this, 1);
-    }
-
-    #endregion
-}
-
-#endregion
-
-#region Bishop
-
-public class Bishop : Piece
-{
-    #region Constructor
-
-    public Bishop(Position position, Team team) : base(position, PieceType.BISHOP, team)
-    {
-        direction = new List<Vector2>
-            { new Vector2(1, 1), new Vector2(1, -1), new Vector2(-1, 1), new Vector2(-1, -1) };
-    }
-
-    #endregion
-}
-
-#endregion
-
-#region Queen
-
-public class Queen : Piece
-{
-    #region Constructor
-
-    public Queen(Position position, Team team) : base(position, PieceType.QUEEN, team)
-    {
-        direction = new List<Vector2>
-        {
-            new Vector2(1, 0), new Vector2(-1, 0), new Vector2(0, 1), new Vector2(0, -1), new Vector2(1, 1),
-            new Vector2(1, -1), new Vector2(-1, 1), new Vector2(-1, -1)
-        };
-    }
-
-    #endregion
-}
-
-#endregion
