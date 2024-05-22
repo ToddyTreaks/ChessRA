@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Script.Boards;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -36,17 +38,21 @@ namespace Script
             this.playerTurn = !playerTurn;
         }
 
-        public void movePiece(GameObject colliderGameObject)
+        public void MovePiece(GameObject colliderGameObject)
         {
-            
+            Position newPosition = PreviewBoard.Instance.WhatIsPosition(colliderGameObject);
+            PhysicalBoard.Instance.MovePiece(newPosition);
+            playerTurn = !playerTurn;
         }
 
-        public void selectPiece(GameObject colliderGameObject)
+        public void SelectPiece(GameObject colliderGameObject)
         {
-            
+            Position positionPiece = PhysicalBoard.Instance.WhatIsPosition(colliderGameObject);
+            List<Position> everyPossiblePosition = CalculBoard._instance.MoveAllowed(positionPiece);
+            PreviewBoard.Instance.ShowPos(everyPossiblePosition);
         }
 
-        public void nothing()
+        public void Nothing()
         {
             PreviewBoard.Instance.ClearPreview();
         }
