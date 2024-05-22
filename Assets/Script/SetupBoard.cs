@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [Serializable]
 public class PieceDic
@@ -21,10 +22,10 @@ public class SetupBoard : MonoBehaviour
     private float _xDir;
     private float _zDir;
 
-    private void Start()
+    private void Awake()
     {
-        _xDir = origin.position.x - direction.position.x;
-        _zDir = origin.position.z - direction.position.z;
+        _xDir = direction.position.x - origin.position.x;
+        _zDir = direction.position.z - origin.position.z;
         Pieces = new Dictionary<(PieceType, Team), GameObject>();
         foreach (var piece in pieces)
         {
@@ -34,9 +35,12 @@ public class SetupBoard : MonoBehaviour
 
 
     public void Setup(Piece[,] board){
-        for( int i = 0; i < board.Length; i++){
-            for(int j = 0; j < board.Length; j++){
+        for( int i = 0; i <  8; i++){
+            for(int j = 0; j <  8; j++)
+            {
+                if(board[i,j] == null) continue;
                 Instantiate(
+                    parent: this.transform,
                     original: Pieces[(board[i,j].type, board[i,j].team)], 
                     position: origin.position + new Vector3(i* _xDir, 0, j*_zDir), 
                     rotation: direction.rotation);

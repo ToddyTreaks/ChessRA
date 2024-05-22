@@ -9,12 +9,8 @@ namespace Script
 
         public SetupBoard setupBoard;
 
-        private void Awake()
-        {
-            setupBoard = GetComponent<SetupBoard>();
-        }
 
-        private void Start()
+        private void Awake()
         {
             if (Instance == null)
             {

@@ -16,6 +16,7 @@ namespace Script
 
         private void Start()
         {
+            BoardArray = new Piece[8, 8];
             for (var line = 0; line < 8; line++)
             {
                 for (var col = 0; col < 8; col++)
@@ -26,7 +27,6 @@ namespace Script
                     AddPiece(piece, line, col);
                 }
             }
-
             GameManager.Instance.setupBoard.Setup(BoardArray);
         }
 
@@ -51,8 +51,8 @@ namespace Script
                     break;
                 case 1:
                 case 6: return new Pawn(pos, team);
+                default: return null;
             }
-
             return null;
         }
 
