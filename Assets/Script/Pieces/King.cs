@@ -30,7 +30,7 @@ public class King : Piece
 
     protected override List<Position> MoveAllowed()
     {
-        _allowedPos = Board.CheckMove(this, direction, 1);
+        _allowedPos = Board.CheckMove(this, 1);
 
 
         // DONE : Gérer le cas où le roi peut roquer

@@ -72,13 +72,13 @@ namespace Script
 
         #endregion
 
-        #region VerificationMove
+        #region Move Verification
 
-        public static List<Position> CheckMove(Piece inputPiece, List<Vector2> direction, int maxDistance = 7)
+        public static List<Position> CheckMove(Piece inputPiece, int maxDistance = 7, bool canTake = true)
         {
             List<Position> possibleMove = new List<Position>();
 
-            foreach (Vector2 dir in direction)
+            foreach (Vector2 dir in inputPiece.direction)
             {
                 for (int i = 0; i <= maxDistance; i++)
                 {
@@ -92,7 +92,7 @@ namespace Script
 
                     if (BoardArray[xMove, yMove] != null)
                     {
-                        if (BoardArray[xMove, yMove].team != inputPiece.team)
+                        if (BoardArray[xMove, yMove].team != inputPiece.team && canTake)
                         {
                             possibleMove.Add(new Position(xMove, yMove));
                         }
@@ -108,9 +108,12 @@ namespace Script
 
             return possibleMove;
         }
+        
 
         #endregion
 
+        #region Check Verification
+        
         public static bool NotPuttingKingInCheck(Piece piece, Position targetPosition)
         {
             Piece savedPiece = BoardArray[targetPosition.xIndex, targetPosition.yIndex];
@@ -148,5 +151,7 @@ namespace Script
 
             return false;
         }
+        
+        #endregion
     }
 }

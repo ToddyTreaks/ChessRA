@@ -83,7 +83,7 @@ public abstract class Piece
 
     protected virtual List<Position> MoveAllowed()
     {
-        return Board.CheckMove(this, direction);
+        return Board.CheckMove(this);
     }
 
     #endregion
@@ -92,7 +92,8 @@ public abstract class Piece
 
     public void MovePiece(Piece piece, Position targetPosition)
     {
-        PieceMovement(piece, targetPosition);
+        if (MoveAllowed().Contains(targetPosition))
+            PieceMovement(piece, targetPosition);
     }
 
     protected virtual void PieceMovement(Piece piece, Position targetPosition)
@@ -155,7 +156,7 @@ public class Knight : Piece
 
     protected override List<Position> MoveAllowed()
     {
-        return Board.CheckMove(this, direction, 1);
+        return Board.CheckMove(this, 1);
     }
 
     #endregion

@@ -8,7 +8,7 @@ public class Pawn : Piece
 {
     #region Attributs
 
-    private bool firstMove = true;
+    public bool firstMove = true;
     private bool canTake = false;
     private List<Position> allowedPos;
     private Vector2 captureRight;
@@ -40,14 +40,14 @@ public class Pawn : Piece
 
     protected override List<Position> MoveAllowed()
     {
-        // TODO : Gérer le cas où le pion est bloqué par une autre pièce
+        // DONE : Gérer le cas où le pion peut avancer de 2 cases
+        // DONE : Gérer le cas où le pion est bloqué par une autre pièce
         // DONE : Gérer le cas où le pion peut prendre une pièce
         // TODO : Gérer le cas où le pion peut prendre en passant
-        allowedPos = Board.CheckMove(this, direction, 1);
+        // TODO : Gérer le cas où le pion est promu
+        allowedPos = Board.CheckMove(this, this.firstMove ? 2 : 1, false);
         CanCapture(captureLeft);
         CanCapture(captureRight);
-
-
         return allowedPos;
     }
 
@@ -66,4 +66,5 @@ public class Pawn : Piece
     }
 
     #endregion
+    
 }
