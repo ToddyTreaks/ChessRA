@@ -23,7 +23,7 @@ public class Pawn : Piece
 
     public void Promote()
     {
-        // TODO : Gérer le cas où le pion est promu en autre chose qu'une reine
-        // TODO : Gérer la destruction du pion ( on fait hériter Piece de MonoBehaviour ou pas ? )
+        // TODO : Créer un menu pour choisir la promotion
+        // TODO : Renvoyer la pièce choisie
     }
 }
