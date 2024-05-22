@@ -56,12 +56,16 @@ public class Pawn : Piece
 
     public void CanCapture(Vector2 direction)
     {
+        Debug.Log("Start Capture");
         if (Board.BoardArray[(int)(this.actualPosition.xIndex + direction.x),
                 (int)(this.actualPosition.yIndex + direction.y)] != null)
         {
+            Debug.Log("Can capture");
             allowedPos.Add(new Position((int)(this.actualPosition.xIndex + direction.x),
                 (int)(this.actualPosition.yIndex + direction.y)));
         }
+
+        Debug.Log("Capture");
     }
 
     #endregion
