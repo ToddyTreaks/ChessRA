@@ -11,6 +11,6 @@ public enum Team
 public abstract class Piece : MonoBehaviour
 {
     public Team team;
-    protected List<Vector2> direction {get; set;}
+    protected internal List<Vector2> direction {get; set;}
     public GameObject prefabModel;
 }
