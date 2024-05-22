@@ -144,9 +144,7 @@ namespace Script
                     {
                         if (BoardArray[pos.xIndex, pos.yIndex] != null &&
                             BoardArray[pos.xIndex, pos.yIndex].type == PieceType.KING)
-                        {
                             return true;
-                        }
                     }
                 }
             }
