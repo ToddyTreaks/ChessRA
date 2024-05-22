@@ -27,7 +27,7 @@ namespace Script
                     AddPiece(piece, line, col);
                 }
             }
-            GameManager.Instance.setupBoard.Setup(BoardArray);
+            GameManager.Instance.physicalBoard.Setup(BoardArray);
         }
 
         private Piece CreatePiece(int line, int col, Team team, Position pos)
@@ -44,8 +44,8 @@ namespace Script
                         case 6: return new Knight(pos, team);
                         case 2:
                         case 5: return new Bishop(pos, team);
-                        case 3: return new Queen(pos, team);
-                        case 4: return new King(pos, team);
+                        case 4: return new Queen(pos, team);
+                        case 3: return new King(pos, team);
                     }
 
                     break;
@@ -153,5 +153,10 @@ namespace Script
         }
         
         #endregion
+        
+        public Piece GetPiece(Position position)
+        {
+            return BoardArray[position.xIndex, position.yIndex];
+        }
     }
 }

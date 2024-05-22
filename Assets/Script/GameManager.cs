@@ -1,12 +1,14 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Script
 {
     public class GameManager : MonoBehaviour
     {
         public static GameManager Instance;
-        public SetupBoard setupBoard;
+        public PhysicalBoard physicalBoard;
+        public Board board;
 
         private bool playerTurn = false;
         private bool isAPieceSelected = false;

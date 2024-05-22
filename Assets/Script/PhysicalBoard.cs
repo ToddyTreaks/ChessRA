@@ -1,0 +1,130 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using Script;
+using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.Serialization;
+
+[Serializable]
+public class PieceDic
+{
+    public PieceType type;
+    public Team team;
+    public GameObject prefab;
+}
+
+public class PhysicalBoard : MonoBehaviour
+{
+    [SerializeField] private List<PieceDic> pieces;
+    [SerializeField] private Transform origin;
+    [SerializeField] private Transform direction;
+    [SerializeField] private GameObject previewBlock;
+    
+
+    private Dictionary<(PieceType, Team), GameObject> Pieces;
+    private float _xDir;
+    private float _zDir;
+    private float _length;
+    private float _height;
+    private List<GameObject> _previewBlocks;
+    private GameObject _selectedPiece;
+    private void Awake()
+    {
+        _xDir = direction.position.x - origin.position.x;
+        _zDir = direction.position.z - origin.position.z;
+        Pieces = new Dictionary<(PieceType, Team), GameObject>();
+        foreach (var piece in pieces)
+        {
+            Pieces.Add((piece.type, piece.team), piece.prefab);
+        }
+        _previewBlocks = new List<GameObject>();
+    }
+
+
+    public void Setup(Piece[,] board)
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                if (board[i, j] == null) continue;
+                var oui = Instantiate(
+                    parent: this.transform,
+                    original: Pieces[(board[i, j].type, board[i, j].team)],
+                    position: origin.position + new Vector3(i * _xDir, 0, j * _zDir),
+                    rotation: direction.rotation);
+                if (i == 0 && j == 0)
+                {
+                    _length = Mathf.Abs(oui.transform.localPosition.x);
+                    _height = Mathf.Abs(oui.transform.localPosition.z);
+                }
+                if (i == 7 && j == 7)
+                {
+                    _length += Mathf.Abs(oui.transform.localPosition.x);
+                    _height += Mathf.Abs(oui.transform.localPosition.z);
+                }
+            }
+        }
+    }
+
+    public void ClearBoard()
+    {
+        foreach (Transform child in origin)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+
+    public void DestroyPiece(GameObject piece)
+    {
+        Destroy(piece);
+    }
+
+    public void ChangePiecePosition(GameObject piece, Position position)
+    {
+        piece.transform.position = origin.position + new Vector3(position.xIndex * _xDir, 0, position.yIndex * _zDir);
+    }
+
+    public void SelectPiece(GameObject piece)
+    {
+        if (!_selectedPiece.IsUnityNull()) SelectNone();
+        _selectedPiece = piece;
+        piece.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
+        double x = (piece.transform.localPosition.x + _length/2) *7/_length;
+        double z = (piece.transform.localPosition.z + _height/2) *8/_height;
+        Piece pieceScript = GameManager.Instance.board.GetPiece(new Position((int) x, (int) z));
+        //check if good team
+        //check if it's the turn of the team
+        List<Position> posList = pieceScript.GetMoveSelectedPiece();
+        Debug.Log(posList);
+        foreach (Position pos in posList)
+        {
+            //highlight the possible move
+            GameObject highlight = 
+                Instantiate(
+                    parent: transform,
+                    original: previewBlock,
+                    position: origin.position + new Vector3(pos.xIndex* _xDir, 0, pos.yIndex* _zDir),
+                    rotation: direction.rotation);
+            _previewBlocks.Add(highlight);
+        }
+    }
+
+    public void SelectNone()
+    {
+        if (_selectedPiece.IsUnityNull()) return;
+        _selectedPiece.transform.localScale = new Vector3(1, 1, 1);
+        _selectedPiece = null;
+        foreach (GameObject block in _previewBlocks)
+        {
+            Destroy(block);
+        }
+        _previewBlocks.Clear();
+    }
+
+    public void MovePiece()
+    {
+        Debug.Log("MovePiece");
+    }
+}
