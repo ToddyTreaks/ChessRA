@@ -56,7 +56,6 @@ public class Pawn : Piece
 
     public void CanCapture(Vector2 direction)
     {
-        Debug.Log("Start Capture");
         if (Board.BoardArray[(int)(this.actualPosition.xIndex + direction.x),
                 (int)(this.actualPosition.yIndex + direction.y)] != null)
         {
@@ -64,20 +63,18 @@ public class Pawn : Piece
             allowedPos.Add(new Position((int)(this.actualPosition.xIndex + direction.x),
                 (int)(this.actualPosition.yIndex + direction.y)));
         }
-
-        Debug.Log("Capture");
     }
 
     #endregion
 
-    protected override void PieceMovement(Piece piece, Position targetPosition)
+    protected override void PieceMovement(Position targetPosition)
     {
         if (targetPosition.xIndex == 0 || targetPosition.xIndex == 7)
         {
             Promote();
         }
 
-        base.PieceMovement(piece, targetPosition);
+        base.PieceMovement(targetPosition);
     }
 
     private void Promote()

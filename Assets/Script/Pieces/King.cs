@@ -68,7 +68,7 @@ public class King : Piece
 
     #region Movement
 
-    protected override void PieceMovement(Piece piece, Position targetPosition)
+    protected override void PieceMovement(Position targetPosition)
     {
         if (_firstMove && targetPosition.xIndex == 6)
         {
@@ -82,7 +82,7 @@ public class King : Piece
         }
         else
         {
-            base.PieceMovement(piece, targetPosition);
+            base.PieceMovement(targetPosition);
         }
     }
 

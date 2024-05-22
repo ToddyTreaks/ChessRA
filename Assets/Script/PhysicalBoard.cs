@@ -20,15 +20,16 @@ public class PhysicalBoard : MonoBehaviour
     [SerializeField] private Transform origin;
     [SerializeField] private Transform direction;
     [SerializeField] private GameObject previewBlock;
-    
+
 
     private Dictionary<(PieceType, Team), GameObject> Pieces;
     private float _xDir;
     private float _zDir;
-    private float _length;
-    private float _height;
+    private static float _length;
+    private static float _height;
     private List<GameObject> _previewBlocks;
     private GameObject _selectedPiece;
+
     private void Awake()
     {
         _xDir = direction.position.x - origin.position.x;
@@ -38,6 +39,7 @@ public class PhysicalBoard : MonoBehaviour
         {
             Pieces.Add((piece.type, piece.team), piece.prefab);
         }
+
         _previewBlocks = new List<GameObject>();
     }
 
@@ -59,6 +61,7 @@ public class PhysicalBoard : MonoBehaviour
                     _length = Mathf.Abs(oui.transform.localPosition.x);
                     _height = Mathf.Abs(oui.transform.localPosition.z);
                 }
+
                 if (i == 7 && j == 7)
                 {
                     _length += Mathf.Abs(oui.transform.localPosition.x);
@@ -91,10 +94,9 @@ public class PhysicalBoard : MonoBehaviour
         if (!_selectedPiece.IsUnityNull()) SelectNone();
         _selectedPiece = piece;
         piece.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
-        var x =(int) ((piece.transform.localPosition.x + _length/2) *7/_length);
-        var z =(int) ((piece.transform.localPosition.z + _height/2) *8/_height);
-        Debug.Log("position" + x + " " + z);
-        Piece pieceScript = GameManager.Instance.board.GetPiece(new Position( x, z));
+        Position position = GetCoordinatesInBoard(piece);
+        Debug.Log("position" + position.xIndex + " " + position.yIndex);
+        Piece pieceScript = GameManager.Instance.board.GetPiece(new Position(position.xIndex, position.yIndex));
         //check if good team
         //check if it's the turn of the team
         List<Position> posList = pieceScript.GetMoveSelectedPiece();
@@ -106,9 +108,19 @@ public class PhysicalBoard : MonoBehaviour
                 Instantiate(
                     parent: piece.transform,
                     original: previewBlock);
-            highlight.transform.localPosition = new Vector3((float)(( pos.xIndex - x) * 1.2), 0, (float)((pos.yIndex - z) * 1.35));
+            highlight.transform.localPosition = new Vector3((float)((pos.xIndex - position.xIndex) * 1.2), 0,
+                (float)((pos.yIndex - position.yIndex) * 1.35));
             _previewBlocks.Add(highlight);
         }
+    }
+
+    public Position GetCoordinatesInBoard(GameObject obj)
+    {
+        if (obj == null) return null;
+
+        Position position = new Position((int)((obj.transform.localPosition.x + _length / 2) * 7 / _length),
+            (int)((obj.transform.localPosition.z + _height / 2) * 8 / _height));
+        return position;
     }
 
     public void SelectNone()
@@ -120,11 +132,14 @@ public class PhysicalBoard : MonoBehaviour
         {
             Destroy(block);
         }
+
         _previewBlocks.Clear();
     }
 
-    public void MovePiece()
+    public void MovePiece(Piece piece, Position targetPosition)
     {
-        Debug.Log("MovePiece");
+        Debug.Log("MovePiece to : " + targetPosition.xIndex + " " + targetPosition.yIndex);
+        piece.MovePiece(targetPosition);
+        ChangePiecePosition(_selectedPiece, targetPosition);
     }
 }

@@ -89,23 +89,23 @@ public abstract class Piece
 
     #region MovementPhase
 
-    public void MovePiece(Piece piece, Position targetPosition)
+    public void MovePiece(Position targetPosition)
     {
         if (allowedPositionsForNextMove.Contains(targetPosition))
-            PieceMovement(piece, targetPosition);
+            PieceMovement(targetPosition);
         else throw new Exception("This move is not allowed");
     }
 
-    protected virtual void PieceMovement(Piece piece, Position targetPosition)
+    protected virtual void PieceMovement(Position targetPosition)
     {
         if (Board.BoardArray[targetPosition.xIndex, targetPosition.yIndex] != null)
         {
             Board.RemovePiece(targetPosition.xIndex, targetPosition.yIndex);
         }
 
-        Board.AddPiece(piece, targetPosition.xIndex, targetPosition.yIndex);
-        Board.RemovePiece(piece.actualPosition.xIndex, piece.actualPosition.yIndex);
-        piece.actualPosition = targetPosition;
+        Board.AddPiece(this, targetPosition.xIndex, targetPosition.yIndex);
+        Board.RemovePiece(this.actualPosition.xIndex, this.actualPosition.yIndex);
+        this.actualPosition = targetPosition;
     }
 
     #endregion
