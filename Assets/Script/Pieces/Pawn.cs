@@ -1,9 +1,6 @@
 using System.Collections.Generic;
-using System.Transactions;
 using UnityEngine;
 using Script;
-using UnityEditor;
-using UnityEngine.UIElements;
 
 
 public class Pawn : Piece
