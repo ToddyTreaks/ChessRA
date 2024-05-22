@@ -17,7 +17,7 @@ public class PieceDic
 public class PhysicalBoard : MonoBehaviour
 {
     
-    private PhysicalBoard _instance;
+    public static PhysicalBoard _instance;
     // Start is called before the first frame update
     void Awake()
     {

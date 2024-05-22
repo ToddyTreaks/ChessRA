@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CalculBoard : MonoBehaviour
 {
-    private CalculBoard _instance;
+    public static CalculBoard _instance;
     // Start is called before the first frame update
     void Awake()
     {
