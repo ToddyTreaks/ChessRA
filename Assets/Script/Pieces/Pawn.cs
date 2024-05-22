@@ -23,12 +23,12 @@ public class Pawn : Piece
         {
             direction = new List<Vector2> { new Vector2(1, 0) };
             captureRight = new Vector2(1, 1);
-            captureLeft = new Vector2(1, -1);
+            captureLeft = new Vector2(-1, 1);
         }
         else
         {
             direction = new List<Vector2> { new Vector2(-1, 0) };
-            captureRight = new Vector2(-1, 1);
+            captureRight = new Vector2(1, -1);
             captureLeft = new Vector2(-1, -1);
         }
     }
