@@ -10,9 +10,6 @@ namespace Script
 
         public static Piece[,] BoardArray;
 
-        public static bool isCheck = false;
-        public static bool isCheckMate = false;
-
         #endregion
 
         #region Initialisation

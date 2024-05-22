@@ -65,19 +65,5 @@ public class Pawn : Piece
         }
     }
 
-    public override bool CanCaptureOpponentKing()
-    {
-        Piece pieceCaptureLeft = Board.BoardArray[(int)(this.actualPosition.xIndex + captureLeft.x),
-            (int)(this.actualPosition.yIndex + captureLeft.y)];
-        Piece pieceCaptureRight = Board.BoardArray[(int)(this.actualPosition.xIndex + captureRight.x),
-            (int)(this.actualPosition.yIndex + captureRight.y)];
-
-        if (pieceCaptureLeft != null && pieceCaptureLeft.type == PieceType.KING && pieceCaptureLeft.team != team)
-            return true;
-        if (pieceCaptureRight != null && pieceCaptureRight.type == PieceType.KING && pieceCaptureRight.team != team)
-            return true;
-        return false;
-    }
-
     #endregion
 }

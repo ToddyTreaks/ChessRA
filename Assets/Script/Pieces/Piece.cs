@@ -104,32 +104,7 @@ public abstract class Piece
 
         Board.AddPiece(piece, targetPosition.xIndex, targetPosition.yIndex);
         Board.RemovePiece(piece.actualPosition.xIndex, piece.actualPosition.yIndex);
-        if (CanCaptureOpponentKing())
-            Board.isCheck = true;
         piece.actualPosition = targetPosition;
-    }
-
-    #endregion
-
-    #region CaptureOpponentKing
-
-    public virtual bool CanCaptureOpponentKing()
-    {
-        AttackPos = MoveAllowed();
-        foreach (Position position in AttackPos)
-        {
-            if (Board.BoardArray[position.xIndex, position.yIndex].type == PieceType.KING &&
-                Board.BoardArray[position.xIndex, position.yIndex].team != team)
-            {
-                return true;
-            }
-
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     #endregion
