@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class Queen : Piece
 {
-    #region Constructor
-
-    
     private void Start()
     {
         direction = new List<Vector2>
@@ -15,6 +12,4 @@ public class Queen : Piece
             new Vector2(1, -1), new Vector2(-1, 1), new Vector2(-1, -1)
         };
     }
-
-    #endregion
 }
