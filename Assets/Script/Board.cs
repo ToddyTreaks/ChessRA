@@ -77,14 +77,15 @@ namespace Script
         public static List<Position> CheckMove(Piece inputPiece, int maxDistance = 7, bool canTake = true)
         {
             List<Position> possibleMove = new List<Position>();
-
+            Debug.Log(inputPiece.direction.Count);
             foreach (Vector2 dir in inputPiece.direction)
             {
-                for (int i = 0; i <= maxDistance; i++)
+                for (int i = 1; i <= maxDistance; i++)
                 {
+                    Debug.Log("checked oui : "+ i);
                     int xMove = inputPiece.actualPosition.xIndex + (int)dir.x * i;
                     int yMove = inputPiece.actualPosition.yIndex + (int)dir.y * i;
-
+                    Debug.Log("checked position : "+ xMove + " " + yMove);
                     if (xMove < 0 || xMove > 7 || yMove < 0 || yMove > 7)
                     {
                         break;

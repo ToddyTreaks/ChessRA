@@ -69,14 +69,12 @@ public abstract class Piece
 
     public List<Position> GetMoveSelectedPiece()
     {
-        allowedPositionsForNextMove = null;
+        allowedPositionsForNextMove = new List<Position>();
         List<Position> possiblePositions = PieceAllowedMove();
         foreach (Position targetPosition in possiblePositions)
         {
-            if (Board.NotPuttingKingInCheck(this, targetPosition))
-            {
-                allowedPositionsForNextMove.Add(targetPosition);
-            }
+            allowedPositionsForNextMove.Add(targetPosition);
+            //if (Board.NotPuttingKingInCheck(this, targetPosition))
         }
 
         return allowedPositionsForNextMove;

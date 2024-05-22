@@ -91,22 +91,22 @@ public class PhysicalBoard : MonoBehaviour
         if (!_selectedPiece.IsUnityNull()) SelectNone();
         _selectedPiece = piece;
         piece.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
-        double x = (piece.transform.localPosition.x + _length/2) *7/_length;
-        double z = (piece.transform.localPosition.z + _height/2) *8/_height;
-        Piece pieceScript = GameManager.Instance.board.GetPiece(new Position((int) x, (int) z));
+        var x =(int) ((piece.transform.localPosition.x + _length/2) *7/_length);
+        var z =(int) ((piece.transform.localPosition.z + _height/2) *8/_height);
+        Debug.Log("position" + x + " " + z);
+        Piece pieceScript = GameManager.Instance.board.GetPiece(new Position( x, z));
         //check if good team
         //check if it's the turn of the team
         List<Position> posList = pieceScript.GetMoveSelectedPiece();
-        Debug.Log(posList);
+        Debug.Log(posList.Count);
         foreach (Position pos in posList)
         {
             //highlight the possible move
-            GameObject highlight = 
+            GameObject highlight =
                 Instantiate(
-                    parent: transform,
-                    original: previewBlock,
-                    position: origin.position + new Vector3(pos.xIndex* _xDir, 0, pos.yIndex* _zDir),
-                    rotation: direction.rotation);
+                    parent: piece.transform,
+                    original: previewBlock);
+            highlight.transform.localPosition = new Vector3((float)(( pos.xIndex - x) * 1.2), 0, (float)((pos.yIndex - z) * 1.35));
             _previewBlocks.Add(highlight);
         }
     }
