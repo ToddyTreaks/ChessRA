@@ -85,7 +85,35 @@ namespace Script.Boards
         public void MovePiece(Position position)
         {
             if (selectedPosition.IsUnityNull()) return;
+            Piece piece = Array[selectedPosition.xIndex, selectedPosition.yIndex].GetComponent<Piece>();
+            if (piece is King)
+            {
+                King king = (King)piece;
+                if (king.mayCastle)
+                {
+                    if (position.yIndex == 2)
+                    {
+                        MovePiece(new Position(position.xIndex, 2));
+                        selectedPosition = new Position(position.xIndex, 0);
+                        MovePiece(new Position(position.xIndex, 3));
+                    }
+                    else if (position.yIndex == 6)
+                    {
+                        MovePiece(new Position(position.xIndex, 7));
+                        selectedPosition = new Position(position.xIndex, 7);
+                        MovePiece(new Position(position.xIndex, 5));
+                    }
 
+                    king.mayCastle = false;
+                }
+            }
+
+            if (piece is Pawn && (position.yIndex == 0 || position.yIndex == 7))
+            {
+                Pawn pawn = (Pawn)piece;
+                pawn.Promote();
+                return;
+            }
 
             Destroy(Array[position.xIndex, position.yIndex]);
             Array[selectedPosition.xIndex, selectedPosition.yIndex].transform.position =
