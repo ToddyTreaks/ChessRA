@@ -7,9 +7,7 @@ namespace Script
     public class GameManager : MonoBehaviour
     {
         public static GameManager Instance;
-        public PhysicalBoard physicalBoard;
-        public Board board;
-
+        
         private bool playerTurn = false;
         private bool isAPieceSelected = false;
 
@@ -32,10 +30,25 @@ namespace Script
             // TODO : Si Piece.MovePiece() est possible alors bouger sa pièce
             // TODO : Changer Player
         }
-
+        
         private void Turn(bool playerTurn)
         {
             this.playerTurn = !playerTurn;
+        }
+
+        public void movePiece(GameObject colliderGameObject)
+        {
+            
+        }
+
+        public void selectPiece(GameObject colliderGameObject)
+        {
+            
+        }
+
+        public void nothing()
+        {
+            PreviewBoard.Instance.ClearPreview();
         }
     }
 }

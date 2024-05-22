@@ -18,18 +18,15 @@ public class Input : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(UnityEngine.Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hitPreview, Mathf.Infinity, _previewLayer))
             {
-                GameManager.Instance.physicalBoard.MovePiece(_selectedPiece,
-                    GameManager.Instance.physicalBoard.GetCoordinatesInBoard(hitPreview.collider.gameObject));
+                GameManager.Instance.movePiece(hitPreview.collider.gameObject);
             }
             else if (Physics.Raycast(ray, hitInfo: out RaycastHit hitPiece, Mathf.Infinity, _pieceLayer))
             {
-                GameManager.Instance.physicalBoard.SelectPiece(hitPiece.collider.gameObject);
-                _selectedPiece = GameManager.Instance.board.GetPiece(
-                    GameManager.Instance.physicalBoard.GetCoordinatesInBoard(hitPiece.collider.gameObject));
+                GameManager.Instance.selectPiece(hitPreview.collider.gameObject);
             }
             else
             {
-                GameManager.Instance.physicalBoard.SelectNone();
+                GameManager.Instance.nothing();
             }
         }
     }
