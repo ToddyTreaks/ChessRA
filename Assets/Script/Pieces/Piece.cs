@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
 
 public enum Team
@@ -10,6 +11,6 @@ public enum Team
 public abstract class Piece : MonoBehaviour
 {
     public Team team;
-    public List<Vector2> direction;
+    protected List<Vector2> direction {get; set;}
     public GameObject prefabModel;
 }
