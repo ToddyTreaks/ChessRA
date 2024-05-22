@@ -16,6 +16,10 @@ public class PieceDic
 
 public class PhysicalBoard : MonoBehaviour
 {
+    /*
+     * Instantiate the pieces on the board
+     * Gestion de movePiece
+     */
     [SerializeField] private List<PieceDic> pieces;
     [SerializeField] private Transform origin;
     [SerializeField] private Transform direction;

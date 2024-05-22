@@ -15,4 +15,14 @@ public class PreviewBoard : MonoBehaviour
     {
         
     }
+    
+    /*
+     * Attributs : Prefab de preview, tableau de preview, liste de positionscontenant les positions des previews activé
+     * 
+     * Initialise les previews blocs ( au start on fait 64 case et on les désactive, distance x : 1 & z : 1 /!\ On fait en localposition)
+     * 
+     * Fonction qui pour une liste de position affiche les positions
+     * Fonction qui clear le tableau de preview
+     * 
+     */
 }

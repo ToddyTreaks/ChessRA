@@ -41,7 +41,7 @@ public class Position
 #endregion
 
 
-public abstract class Piece : MonoBehaviour
+public abstract class Piece
 {
     #region Attributs
 
