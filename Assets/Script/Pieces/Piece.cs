@@ -66,9 +66,19 @@ public abstract class Piece
 
     #region SelectionPhase
 
-    public List<Position> SelectedPiece()
+    public List<Position> GetMoveSelectedPiece()
     {
-        return MoveAllowed();
+        List<Position> possiblePositions = MoveAllowed();
+        List<Position> allowedPositions = null;
+        foreach (Position targetPosition in possiblePositions)
+        {
+            if (Board.NotPuttingKingInCheck(this, targetPosition))
+            {
+                allowedPositions.Add(targetPosition);
+            }
+        }
+
+        return allowedPositions;
     }
 
     protected virtual List<Position> MoveAllowed()
@@ -94,18 +104,26 @@ public abstract class Piece
 
         Board.AddPiece(piece, targetPosition.xIndex, targetPosition.yIndex);
         Board.RemovePiece(piece.actualPosition.xIndex, piece.actualPosition.yIndex);
+        if (CanCaptureOpponentKing())
+            Board.isCheck = true;
         piece.actualPosition = targetPosition;
     }
 
     #endregion
 
     #region CaptureOpponentKing
+
     public virtual bool CanCaptureOpponentKing()
     {
         AttackPos = MoveAllowed();
         foreach (Position position in AttackPos)
         {
-            if (Board.BoardArray[position.xIndex, position.yIndex].type == PieceType.KING)
+            if (Board.BoardArray[position.xIndex, position.yIndex].type == PieceType.KING &&
+                Board.BoardArray[position.xIndex, position.yIndex].team != team)
+            {
+                return true;
+            }
+
             {
                 return true;
             }
@@ -113,7 +131,7 @@ public abstract class Piece
 
         return false;
     }
-    
+
     #endregion
 }
 
