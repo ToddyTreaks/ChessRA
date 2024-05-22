@@ -6,7 +6,7 @@ using Unity.VisualScripting;
 
 public class Pawn : Piece
 {
-    private bool firstMove { get; set; }
+    public bool firstMove { get; set; }
     private void Start()
     {
         firstMove = true;

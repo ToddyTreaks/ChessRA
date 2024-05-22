@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using Script;
 using Script.Boards;
 using UnityEngine;
@@ -17,6 +18,8 @@ public class CalculBoard : MonoBehaviour
 {
     public static CalculBoard _instance;
 
+    Piece inputPiece;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -34,7 +37,8 @@ public class CalculBoard : MonoBehaviour
     {
         int maxDistance = 7;
         List<Position> possibleMove = new List<Position>();
-        Piece inputPiece = PhysicalBoard.Instance.Array[positionSelected.xIndex, positionSelected.yIndex].GetComponent<Piece>();
+        inputPiece = PhysicalBoard.Instance.Array[positionSelected.xIndex, positionSelected.yIndex]
+            .GetComponent<Piece>();
 
         if (inputPiece == null)
         {
@@ -43,30 +47,119 @@ public class CalculBoard : MonoBehaviour
 
         if (inputPiece is Pawn)
         {
-            PawnMoveAllowed(positionSelected, inputPiece, possibleMove);
+            PawnMoveAllowed(positionSelected, possibleMove);
         }
         else
         {
             if (inputPiece is King)
             {
                 maxDistance = 1;
-                CastleMoveAllowed(inputPiece, possibleMove);
+                CastleMoveAllowed(positionSelected, possibleMove);
             }
 
             if (inputPiece is Knight)
             {
                 maxDistance = 1;
             }
+
             DirectionMoveAllowed(positionSelected, possibleMove, maxDistance);
         }
-        
-        return KingNotInCheck(inputPiece, possibleMove);
+
+        return KingNotInCheck(positionSelected, possibleMove);
+    }
+
+    private void PawnMoveAllowed(Position positionSelected, List<Position> possibleMove)
+    {
+        int distance = 1;
+        Pawn pawn = (Pawn)inputPiece;
+
+        if (pawn.firstMove)
+            distance = 2;
+
+        for (int i = 1; i <= distance; i++)
+        {
+            int xMove = positionSelected.xIndex + (int)inputPiece.direction[0].x * i;
+            int yMove = positionSelected.yIndex + (int)inputPiece.direction[0].y * i;
+            if (xMove < 0 || yMove < 0)
+            {
+                break;
+            }
+
+            if (PhysicalBoard.Instance.Array[xMove, yMove] != null)
+            {
+                break;
+            }
+
+            possibleMove.Add(new Position(xMove, yMove));
+        }
+
+        PawnCaptureMoveAllowed(positionSelected, possibleMove);
+    }
+
+    private void PawnCaptureMoveAllowed(Position positionSelected, List<Position> possibleMove)
+    {
+        // TODO : Verifier si c'est le bon sens il se peux que X et Y doivent être inversé
+
+        int xMove = positionSelected.xIndex + (int)inputPiece.direction[0].x;
+        int yMove = positionSelected.yIndex + (int)inputPiece.direction[0].y + 1;
+        if (PhysicalBoard.Instance.Array[xMove, yMove] != null &&
+            PhysicalBoard.Instance.Array[xMove, yMove].GetComponent<Piece>().team != inputPiece.team)
+        {
+            possibleMove.Add(new Position(xMove, yMove));
+        }
+
+        yMove = positionSelected.yIndex + (int)inputPiece.direction[0].y - 1;
+        if (PhysicalBoard.Instance.Array[xMove, yMove] != null &&
+            PhysicalBoard.Instance.Array[xMove, yMove].GetComponent<Piece>().team != inputPiece.team)
+        {
+            possibleMove.Add(new Position(xMove, yMove));
+        }
+    }
+
+    private void CastleMoveAllowed(Position positionSelected, List<Position> possibleMove)
+    {
+        King king = (King)inputPiece;
+        if (king.firstMove)
+        {
+            if (PhysicalBoard.Instance.Array[positionSelected.xIndex, 0] != null)
+            {
+                Piece piece = PhysicalBoard.Instance.Array[positionSelected.xIndex, 0].GetComponent<Piece>();
+
+                if (piece is Rook)
+                {
+                    Rook rook = (Rook)piece;
+                    if (rook.firstMove && PhysicalBoard.Instance.Array[positionSelected.xIndex, 1] == null &&
+                        PhysicalBoard.Instance.Array[positionSelected.xIndex, 2] == null &&
+                        PhysicalBoard.Instance.Array[positionSelected.xIndex, 3] == null)
+                    {
+                        possibleMove.Add(new Position(positionSelected.xIndex, 2));
+                        king.mayCastle = true;
+                    }
+                }
+            }
+
+            if (PhysicalBoard.Instance.Array[positionSelected.xIndex, 7] != null)
+            {
+                Piece piece = PhysicalBoard.Instance.Array[positionSelected.xIndex, 7].GetComponent<Piece>();
+                if (piece is Rook)
+                {
+                    Rook rook = (Rook)piece;
+                    if (rook.firstMove &&
+                        PhysicalBoard.Instance.Array[positionSelected.xIndex, 5] == null &&
+                        PhysicalBoard.Instance.Array[positionSelected.xIndex, 6] == null)
+                    {
+                        possibleMove.Add(new Position(positionSelected.xIndex, 6));
+                        king.mayCastle = true;
+                    }
+                }
+            }
+        }
+        else
+            king.mayCastle = false;
     }
 
     private void DirectionMoveAllowed(Position positionSelected, List<Position> possibleMove, int maxDistance)
     {
-        Piece inputPiece = PhysicalBoard.Instance.Array[positionSelected.xIndex, positionSelected.yIndex].GetComponent<Piece>();
-
         foreach (Vector2 dir in inputPiece.direction)
         {
             for (int i = 1; i <= maxDistance; i++)
@@ -84,6 +177,7 @@ public class CalculBoard : MonoBehaviour
                     {
                         possibleMove.Add(new Position(xMove, yMove));
                     }
+
                     break;
                 }
                 else
@@ -94,42 +188,42 @@ public class CalculBoard : MonoBehaviour
         }
     }
 
-    
-    
-    
-    
-    
 
-    public static bool NotPuttingKingInCheck(Piece piece, Position targetPosition)
+    public static List<Position> KingNotInCheck(Position selectedPosition, List<Position> possiblePosition)
     {
-        Piece savedPiece = BoardArray[targetPosition.xIndex, targetPosition.yIndex];
+        List<Position> legalMove = new List<Position>();
+        GameObject pieceGameObject = PhysicalBoard.Instance.Array[selectedPosition.xIndex, selectedPosition.yIndex];
 
-        BoardArray[targetPosition.xIndex, targetPosition.yIndex] = piece;
-        BoardArray[piece.actualPosition.xIndex, piece.actualPosition.yIndex] = null;
-
-        if (!StillInCheck(piece.team))
+        foreach (Position targetPosition in possiblePosition)
         {
-            BoardArray[piece.actualPosition.xIndex, piece.actualPosition.yIndex] = piece;
-            BoardArray[targetPosition.xIndex, targetPosition.yIndex] = savedPiece;
-            return true;
+            PhysicalBoard.Instance.Array[targetPosition.xIndex, targetPosition.yIndex] = pieceGameObject;
+            PhysicalBoard.Instance.Array[selectedPosition.xIndex, selectedPosition.yIndex] = null;
+
+            if (!PutInCheck(pieceGameObject.GetComponent<Piece>().team))
+            {
+                legalMove.Add(targetPosition);
+            }
+
+            PhysicalBoard.Instance.Array[targetPosition.xIndex, targetPosition.yIndex] = null;
+            PhysicalBoard.Instance.Array[selectedPosition.xIndex, selectedPosition.yIndex] = pieceGameObject;
         }
 
-        BoardArray[piece.actualPosition.xIndex, piece.actualPosition.yIndex] = piece;
-        BoardArray[targetPosition.xIndex, targetPosition.yIndex] = savedPiece;
-        return false;
+        return legalMove;
     }
 
-    public static bool StillInCheck(Team team)
+    public static bool PutInCheck(Team team)
     {
-        foreach (Piece piece in BoardArray)
+        foreach (GameObject pieceGameObject in PhysicalBoard.Instance.Array)
         {
-            if (piece != null && piece.team != team)
+            Piece piece = pieceGameObject.GetComponent<Piece>();
+            if (pieceGameObject != null && piece.team != team)
             {
-                List<Position> attackPos = piece.GetMoveSelectedPiece();
+                List<Position> attackPos =
+                    _instance.MoveAllowed(PhysicalBoard.Instance.WhatIsPosition(pieceGameObject));
                 foreach (Position pos in attackPos)
                 {
-                    if (BoardArray[pos.xIndex, pos.yIndex] != null &&
-                        BoardArray[pos.xIndex, pos.yIndex].type == PieceType.KING)
+                    if (PhysicalBoard.Instance.Array[pos.xIndex, pos.yIndex] != null &&
+                        PhysicalBoard.Instance.Array[pos.xIndex, pos.yIndex].GetComponent<Piece>() is King)
                         return true;
                 }
             }

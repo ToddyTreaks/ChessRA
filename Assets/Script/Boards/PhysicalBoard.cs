@@ -21,13 +21,13 @@ namespace Script.Boards
         [SerializeField] private List<GameObject> piecesPrefab;
         [SerializeField] private Material blackMaterial;
 
-        public  Position selectedPosition;
-        public  GameObject[,] Array;
+        public Position selectedPosition;
+        public GameObject[,] Array;
         public static PhysicalBoard Instance;
 
         void Awake()
         {
-            if(Instance == null)
+            if (Instance == null)
             {
                 Instance = this;
             }
@@ -36,6 +36,7 @@ namespace Script.Boards
                 Destroy(this);
             }
         }
+
         private void Start()
         {
             Array = new GameObject[8, 8];
@@ -44,13 +45,16 @@ namespace Script.Boards
                 for (int j = 0; j < 8; j++)
                 {
                     GameObject toCopy = CreatePiece(i, j);
-                    if(toCopy.IsUnityNull()) continue;
-                    GameObject piece = Instantiate( toCopy, new Vector3(i, 0, j), Quaternion.identity);
-                    piece.GetComponent<MeshRenderer>().material = (i + j) % 2 == 0 ? blackMaterial : piecesPrefab[0].GetComponent<MeshRenderer>().material;
+                    if (toCopy.IsUnityNull()) continue;
+                    GameObject piece = Instantiate(toCopy, new Vector3(i, 0, j), Quaternion.identity);
+                    piece.GetComponent<MeshRenderer>().material = (i + j) % 2 == 0
+                        ? blackMaterial
+                        : piecesPrefab[0].GetComponent<MeshRenderer>().material;
                     Array[i, j] = piece;
                 }
             }
         }
+
         private GameObject CreatePiece(int line, int col)
         {
             switch (line)
@@ -59,23 +63,31 @@ namespace Script.Boards
                 case 7:
                     switch (col)
                     {
-                        case 0: case 7: return piecesPrefab[1];
-                        case 1: case 6: return piecesPrefab[2];
-                        case 2: case 5: return piecesPrefab[3];
-                        case 4:         return piecesPrefab[4];
-                        case 3:         return piecesPrefab[5];
+                        case 0:
+                        case 7: return piecesPrefab[1];
+                        case 1:
+                        case 6: return piecesPrefab[2];
+                        case 2:
+                        case 5: return piecesPrefab[3];
+                        case 4: return piecesPrefab[4];
+                        case 3: return piecesPrefab[5];
                     }
+
                     break;
-                case 1: case 6: return piecesPrefab[0];
+                case 1:
+                case 6: return piecesPrefab[0];
                 default: return null;
             }
+
             return null;
         }
 
         public void MovePiece(Position position)
         {
             if (selectedPosition.IsUnityNull()) return;
-            Destroy(Array[position.xIndex,position.yIndex]);
+
+
+            Destroy(Array[position.xIndex, position.yIndex]);
             Array[selectedPosition.xIndex, selectedPosition.yIndex].transform.position =
                 new Vector3(position.xIndex, 0, position.yIndex);
             Array[position.xIndex, position.yIndex] = Array[selectedPosition.xIndex, selectedPosition.yIndex];
@@ -92,8 +104,8 @@ namespace Script.Boards
                         return new Position(i, j);
                 }
             }
+
             return new Position(-1, -1);
         }
-        
     }
 }

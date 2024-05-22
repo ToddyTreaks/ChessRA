@@ -4,15 +4,13 @@ using Script;
 
 public class King : Piece
 {
-    private bool _firstMove { get; set; }
-    private bool _canLittleCastle { get; set; }
-    private bool _canBigCastle { get; set; }
+    public bool firstMove;
+    public bool mayCastle;
     
     private void Start()
     {
-        _firstMove = true;
-        _canLittleCastle = true;
-        _canBigCastle = true;
+        firstMove = true;
+        mayCastle = false;
         
         direction = new List<Vector2>
         {

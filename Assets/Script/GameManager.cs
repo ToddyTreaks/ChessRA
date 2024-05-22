@@ -41,6 +41,7 @@ namespace Script
         public void MovePiece(GameObject colliderGameObject)
         {
             Position newPosition = PreviewBoard.Instance.WhatIsPosition(colliderGameObject);
+            
             PhysicalBoard.Instance.MovePiece(newPosition);
             playerTurn = !playerTurn;
         }
