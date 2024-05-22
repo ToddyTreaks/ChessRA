@@ -28,7 +28,7 @@ public class Input : MonoBehaviour
             }
             else if (Physics.Raycast(ray, hitInfo: out RaycastHit hitPiece, Mathf.Infinity, _pieceLayer))
             {
-                GameManager.Instance.MovePiece(hitPreview.collider.gameObject);
+                GameManager.Instance.SelectPiece(hitPreview.collider.gameObject);
             }
             else
             {
