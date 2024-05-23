@@ -18,7 +18,6 @@ using UnityEngine;
 public class CalculBoard : MonoBehaviour
 {
     public static CalculBoard _instance;
-
     Piece inputPiece;
 
     // Start is called before the first frame update
@@ -197,12 +196,15 @@ public class CalculBoard : MonoBehaviour
     {
         List<Position> legalMove = new List<Position>();
         GameObject pieceGameObject = PhysicalBoard.Instance.Array[selectedPosition.xIndex, selectedPosition.yIndex];
-
+        Debug.Log("GameObject in PieceGameObject : " + pieceGameObject);
         foreach (Position targetPosition in possiblePosition)
         {
             PhysicalBoard.Instance.Array[targetPosition.xIndex, targetPosition.yIndex] = pieceGameObject;
             PhysicalBoard.Instance.Array[selectedPosition.xIndex, selectedPosition.yIndex] = null;
-
+            
+            Debug.Log("Test 1 : On target position is now : " + PhysicalBoard.Instance.Array[targetPosition.xIndex, targetPosition.yIndex]);
+            Debug.Log("Test 1 : On start position is now : " + PhysicalBoard.Instance.Array[selectedPosition.xIndex, selectedPosition.yIndex]);
+            
             if (!PutInCheck(pieceGameObject.GetComponent<Piece>().team))
             {
                 legalMove.Add(targetPosition);
@@ -210,7 +212,10 @@ public class CalculBoard : MonoBehaviour
 
             PhysicalBoard.Instance.Array[targetPosition.xIndex, targetPosition.yIndex] = null;
             PhysicalBoard.Instance.Array[selectedPosition.xIndex, selectedPosition.yIndex] = pieceGameObject;
-        }
+            
+            Debug.Log("Test 2 : On target position is now : " + PhysicalBoard.Instance.Array[targetPosition.xIndex, targetPosition.yIndex]);
+            Debug.Log("Test 2 : On start position is now : " + PhysicalBoard.Instance.Array[selectedPosition.xIndex, selectedPosition.yIndex]);
+        } 
 
         return legalMove;
     }
