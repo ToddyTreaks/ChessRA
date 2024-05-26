@@ -88,8 +88,9 @@ namespace Script.Boards
         {
             if (selectedPosition.IsUnityNull()) return;
             parent.transform.localScale = new Vector3((float)1, (float)1, (float)1);
-            Debug.Log("tamere la tchoin tu va bouger");
             Piece piece = Array[selectedPosition.xIndex, selectedPosition.yIndex].GetComponent<Piece>();
+
+            GameObject todie = Instance.Array[position.xIndex, position.yIndex];
             if (piece is King)
             {
                 King king = (King)piece;
@@ -120,9 +121,11 @@ namespace Script.Boards
                 parent.transform.localScale = new Vector3((float)0.015, (float)0.015, (float)0.015);
                 return;
             }
-
-            if (!Array[position.xIndex, position.yIndex].IsUnityNull())
-                Array[position.xIndex, position.yIndex].SetActive(false);
+            if (!todie.IsUnityNull())
+            {
+                Debug.Log(todie + " " + todie.transform.position );
+                todie.SetActive(false);
+            }
             
             Array[selectedPosition.xIndex, selectedPosition.yIndex].transform.position =
                 new Vector3(position.xIndex, 0, -position.yIndex);

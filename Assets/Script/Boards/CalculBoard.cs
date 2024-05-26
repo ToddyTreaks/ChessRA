@@ -199,6 +199,7 @@ public class CalculBoard : MonoBehaviour
         Debug.Log("GameObject in PieceGameObject : " + pieceGameObject);
         foreach (Position targetPosition in possiblePosition)
         {
+            GameObject lastPiece = PhysicalBoard.Instance.Array[targetPosition.xIndex, targetPosition.yIndex];
             PhysicalBoard.Instance.Array[targetPosition.xIndex, targetPosition.yIndex] = pieceGameObject;
             PhysicalBoard.Instance.Array[selectedPosition.xIndex, selectedPosition.yIndex] = null;
             
@@ -210,7 +211,7 @@ public class CalculBoard : MonoBehaviour
                 legalMove.Add(targetPosition);
             }
 
-            PhysicalBoard.Instance.Array[targetPosition.xIndex, targetPosition.yIndex] = null;
+            PhysicalBoard.Instance.Array[targetPosition.xIndex, targetPosition.yIndex] = lastPiece;
             PhysicalBoard.Instance.Array[selectedPosition.xIndex, selectedPosition.yIndex] = pieceGameObject;
             
             Debug.Log("Test 2 : On target position is now : " + PhysicalBoard.Instance.Array[targetPosition.xIndex, targetPosition.yIndex]);
