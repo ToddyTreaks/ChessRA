@@ -87,29 +87,31 @@ namespace Script.Boards
         public void MovePiece(Position position)
         {
             if (selectedPosition.IsUnityNull()) return;
-            parent.transform.localScale = new Vector3((float)1, (float)1, (float)1);
             Piece piece = Array[selectedPosition.xIndex, selectedPosition.yIndex].GetComponent<Piece>();
 
-            GameObject todie = Instance.Array[position.xIndex, position.yIndex];
             if (piece is King)
             {
                 King king = (King)piece;
                 if (king.mayCastle)
                 {
-                    if (position.yIndex == 2)
+                    switch (position.yIndex)
                     {
-                        MovePiece(new Position(position.xIndex, 2));
-                        selectedPosition = new Position(position.xIndex, 0);
-                        MovePiece(new Position(position.xIndex, 3));
+                        case 2:
+                            FastMove(new Position(position.xIndex, 2));
+                            selectedPosition = new Position(position.xIndex, 0);
+                            FastMove(new Position(position.xIndex, 3));
+                            break;
+                        case 6:
+                            FastMove(new Position(position.xIndex, 6));
+                            selectedPosition = new Position(position.xIndex, 7);
+                            FastMove(new Position(position.xIndex, 5));
+                            break;
+                        default:
+                            FastMove(position);
+                            break;
                     }
-                    else if (position.yIndex == 6)
-                    {
-                        MovePiece(new Position(position.xIndex, 7));
-                        selectedPosition = new Position(position.xIndex, 7);
-                        MovePiece(new Position(position.xIndex, 5));
-                    }
-
                     king.mayCastle = false;
+                    return;
                 }
             }
 
@@ -118,15 +120,20 @@ namespace Script.Boards
                 Pawn pawn = (Pawn)piece;
                 pawn.Promote();
                 
-                parent.transform.localScale = new Vector3((float)0.015, (float)0.015, (float)0.015);
                 return;
             }
+            GameObject todie = Instance.Array[position.xIndex, position.yIndex];
             if (!todie.IsUnityNull())
             {
                 Debug.Log(todie + " " + todie.transform.position );
                 todie.SetActive(false);
             }
-            
+            FastMove(position);
+        }
+
+        private void FastMove(Position position)
+        {
+            parent.transform.localScale = new Vector3((float)1, (float)1, (float)1);
             Array[selectedPosition.xIndex, selectedPosition.yIndex].transform.position =
                 new Vector3(position.xIndex, 0, -position.yIndex);
             Array[position.xIndex, position.yIndex] = Array[selectedPosition.xIndex, selectedPosition.yIndex];
