@@ -62,9 +62,5 @@ namespace Script
             PreviewBoard.Instance.ClearPreview();
         }
 
-        public void PromoteTo(GameObject prefab)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

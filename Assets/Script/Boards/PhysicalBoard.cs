@@ -126,7 +126,6 @@ namespace Script.Boards
             if (piece is Pawn && (position.xIndex == 0 || position.xIndex == 7))
             {
                 selectedPosition = position;
-                Debug.Log("Promote");
                 Pawn pawn = (Pawn)piece;
                 pawn.Promote();
             }
@@ -169,7 +168,6 @@ namespace Script.Boards
             }
             parent.transform.localScale = new Vector3((float)1, (float)1, (float)1);
             GameManager.Instance.canClick = true;
-            Debug.Log(selectedPosition.xIndex + " " + selectedPosition.yIndex);
             var i = selectedPosition.xIndex;
             var j = selectedPosition.yIndex;
             Array[i, j].SetActive(false);
