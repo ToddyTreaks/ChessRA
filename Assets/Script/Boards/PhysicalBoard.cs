@@ -115,12 +115,6 @@ namespace Script.Boards
                 }
             }
 
-            if (piece is Pawn && (position.yIndex == 0 || position.yIndex == 7))
-            {
-                Pawn pawn = (Pawn)piece;
-                pawn.Promote();
-                return;
-            }
             if(piece is Pawn)
             {
                 Pawn pawn = (Pawn)piece;
@@ -128,6 +122,14 @@ namespace Script.Boards
                     pawn.firstMove = false;
             }
             FastMove(position);
+            
+            if (piece is Pawn && (position.xIndex == 0 || position.xIndex == 7))
+            {
+                selectedPosition = position;
+                Debug.Log("Promote");
+                Pawn pawn = (Pawn)piece;
+                pawn.Promote();
+            }
         }
 
         private void FastMove(Position position)
@@ -135,7 +137,6 @@ namespace Script.Boards
             GameObject todie = Instance.Array[position.xIndex, position.yIndex];
             if (!todie.IsUnityNull())
             {
-                Debug.Log(todie + " " + todie.transform.position );
                 todie.SetActive(false);
             }
             parent.transform.localScale = new Vector3((float)1, (float)1, (float)1);
@@ -158,6 +159,29 @@ namespace Script.Boards
             }
 
             return new Position(-1, -1);
+        }
+        public void PromoteTo(GameObject prefab)
+        {
+            GameObject canvasPromotion = GameManager.Instance.CanvasPromotion;
+            if (!canvasPromotion.IsUnityNull())
+            {
+                canvasPromotion.SetActive(false);
+            }
+            parent.transform.localScale = new Vector3((float)1, (float)1, (float)1);
+            GameManager.Instance.canClick = true;
+            Debug.Log(selectedPosition.xIndex + " " + selectedPosition.yIndex);
+            var i = selectedPosition.xIndex;
+            var j = selectedPosition.yIndex;
+            Array[i, j].SetActive(false);
+            GameObject piece = Instantiate( 
+                original: prefab,
+                position: new Vector3(i, 0, -j),
+                rotation: Quaternion.identity,
+                parent: parent);
+            piece.GetComponent<Piece>().team = i < 4 ? Team.BLACK : Team.WHITE;
+            piece.GetComponent<MeshRenderer>().sharedMaterial = i < 4? blackMaterial : piecesPrefab[0].GetComponent<MeshRenderer>().sharedMaterial;
+            Array[i, j] = piece;
+            parent.transform.localScale = new Vector3((float)0.015, (float)0.015, (float)0.015);
         }
     }
 }

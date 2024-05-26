@@ -25,5 +25,12 @@ public class Pawn : Piece
     {
         // TODO : Créer un menu pour choisir la promotion
         // TODO : Renvoyer la pièce choisie
+        // set active true canvas named CanvasPromotion
+        GameManager.Instance.canClick = false;
+        GameObject canvasPromotion = GameManager.Instance.CanvasPromotion;
+        if (!canvasPromotion.IsUnityNull())
+        {
+            canvasPromotion.SetActive(true);
+        }
     }
 }

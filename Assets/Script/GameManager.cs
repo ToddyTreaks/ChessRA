@@ -10,6 +10,9 @@ namespace Script
     {
         public static GameManager Instance;
         
+        public GameObject CanvasPromotion;
+        
+        public bool canClick = true;
         private bool playerTurn = true;
         private bool isAPieceSelected = false;
 
@@ -34,7 +37,6 @@ namespace Script
         }
         public void MovePiece(GameObject colliderGameObject)
         {
-            Debug.Log("move");
             Nothing();
             Position newPosition = PreviewBoard.Instance.WhatIsPosition(colliderGameObject);
             
@@ -48,20 +50,21 @@ namespace Script
             if (!playerTurn && colliderGameObject.GetComponent<Piece>().team == Team.WHITE || 
                 playerTurn && colliderGameObject.GetComponent<Piece>().team == Team.BLACK) return;
             PreviewBoard.Instance.ClearPreview();
-            Debug.Log("select");
             Position positionPiece = PhysicalBoard.Instance.WhatIsPosition(colliderGameObject);
             PhysicalBoard.Instance.selectedPosition = positionPiece;
-            Debug.Log("selected position x : " + positionPiece.xIndex + " y " + positionPiece.yIndex );
             List<Position> everyPossiblePosition = CalculBoard._instance.MoveAllowed(positionPiece);
             List<Position> legalPosition = CalculBoard._instance.KingNotInCheck(positionPiece, everyPossiblePosition);
-            Debug.Log(" number of possible posistions " + everyPossiblePosition.Count );
             PreviewBoard.Instance.ShowPos(legalPosition);
         }
 
         public void Nothing()
         {
-            Debug.Log("nothing");
             PreviewBoard.Instance.ClearPreview();
+        }
+
+        public void PromoteTo(GameObject prefab)
+        {
+            throw new NotImplementedException();
         }
     }
 }

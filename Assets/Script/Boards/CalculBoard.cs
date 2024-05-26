@@ -39,7 +39,6 @@ public class CalculBoard : MonoBehaviour
         List<Position> possibleMove = new List<Position>();
         inputPiece = PhysicalBoard.Instance.Array[positionSelected.xIndex, positionSelected.yIndex]
             .GetComponent<Piece>();
-        Debug.Log(inputPiece);
 
         if (inputPiece == null)
         {
@@ -196,15 +195,11 @@ public class CalculBoard : MonoBehaviour
     {
         List<Position> legalMove = new List<Position>();
         GameObject pieceGameObject = PhysicalBoard.Instance.Array[selectedPosition.xIndex, selectedPosition.yIndex];
-        Debug.Log("GameObject in PieceGameObject : " + pieceGameObject);
         foreach (Position targetPosition in possiblePosition)
         {
             GameObject lastPiece = PhysicalBoard.Instance.Array[targetPosition.xIndex, targetPosition.yIndex];
             PhysicalBoard.Instance.Array[targetPosition.xIndex, targetPosition.yIndex] = pieceGameObject;
             PhysicalBoard.Instance.Array[selectedPosition.xIndex, selectedPosition.yIndex] = null;
-            
-            Debug.Log("Test 1 : On target position is now : " + PhysicalBoard.Instance.Array[targetPosition.xIndex, targetPosition.yIndex]);
-            Debug.Log("Test 1 : On start position is now : " + PhysicalBoard.Instance.Array[selectedPosition.xIndex, selectedPosition.yIndex]);
             
             if (!PutInCheck(pieceGameObject.GetComponent<Piece>().team))
             {
@@ -213,9 +208,6 @@ public class CalculBoard : MonoBehaviour
 
             PhysicalBoard.Instance.Array[targetPosition.xIndex, targetPosition.yIndex] = lastPiece;
             PhysicalBoard.Instance.Array[selectedPosition.xIndex, selectedPosition.yIndex] = pieceGameObject;
-            
-            Debug.Log("Test 2 : On target position is now : " + PhysicalBoard.Instance.Array[targetPosition.xIndex, targetPosition.yIndex]);
-            Debug.Log("Test 2 : On start position is now : " + PhysicalBoard.Instance.Array[selectedPosition.xIndex, selectedPosition.yIndex]);
         } 
 
         return legalMove;

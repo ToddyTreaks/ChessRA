@@ -14,21 +14,21 @@ public class Input : MonoBehaviour
 
     private void Update()
     {
-        if (UnityEngine.Input.GetMouseButtonDown(0))
+        if (!GameManager.Instance.canClick) return;
+        if (!UnityEngine.Input.GetMouseButtonDown(0)) return;
+        
+        Ray ray = _camera.ScreenPointToRay(UnityEngine.Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hitPreview, Mathf.Infinity, _previewLayer))
         {
-            Ray ray = _camera.ScreenPointToRay(UnityEngine.Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hitPreview, Mathf.Infinity, _previewLayer))
-            {
-                GameManager.Instance.MovePiece(hitPreview.collider.gameObject);
-            }
-            else if (Physics.Raycast(ray, hitInfo: out RaycastHit hitPiece, Mathf.Infinity, _pieceLayer))
-            {
-                GameManager.Instance.SelectPiece(hitPiece.collider.gameObject);
-            }
-            else
-            {
-                GameManager.Instance.Nothing();
-            }
+            GameManager.Instance.MovePiece(hitPreview.collider.gameObject);
+        }
+        else if (Physics.Raycast(ray, hitInfo: out RaycastHit hitPiece, Mathf.Infinity, _pieceLayer))
+        {
+            GameManager.Instance.SelectPiece(hitPiece.collider.gameObject);
+        }
+        else
+        {
+            GameManager.Instance.Nothing();
         }
     }
 }
