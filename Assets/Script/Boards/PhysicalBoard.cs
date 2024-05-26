@@ -40,6 +40,7 @@ namespace Script.Boards
 
         private void Start()
         {
+            parent.transform.localScale = new Vector3((float)1, (float)1, (float)1);
             Array = new GameObject[8, 8];
             for (int i = 0; i < 8; i++)
             {
@@ -57,7 +58,7 @@ namespace Script.Boards
                     Array[i, j] = piece;
                 }
             }
-            parent.transform.localScale = new Vector3((float)0.015, (float)0.015, (float)0.015);
+            parent.transform.localScale = new Vector3((float)0.0155, (float)0.0155, (float)0.0155);
         }
 
         private GameObject CreatePiece(int line, int col)
@@ -139,11 +140,11 @@ namespace Script.Boards
                 todie.SetActive(false);
             }
             parent.transform.localScale = new Vector3((float)1, (float)1, (float)1);
-            Array[selectedPosition.xIndex, selectedPosition.yIndex].transform.position =
+            Array[selectedPosition.xIndex, selectedPosition.yIndex].transform.localPosition =
                 new Vector3(position.xIndex, 0, -position.yIndex);
             Array[position.xIndex, position.yIndex] = Array[selectedPosition.xIndex, selectedPosition.yIndex];
             Array[selectedPosition.xIndex, selectedPosition.yIndex] = null;
-            parent.transform.localScale = new Vector3((float)0.015, (float)0.015, (float)0.015);
+            parent.transform.localScale = new Vector3((float)0.0155, (float)0.0155, (float)0.0155);
         }
 
         public Position WhatIsPosition(GameObject piece)
@@ -179,7 +180,7 @@ namespace Script.Boards
             piece.GetComponent<Piece>().team = i < 4 ? Team.BLACK : Team.WHITE;
             piece.GetComponent<MeshRenderer>().sharedMaterial = i < 4? blackMaterial : piecesPrefab[0].GetComponent<MeshRenderer>().sharedMaterial;
             Array[i, j] = piece;
-            parent.transform.localScale = new Vector3((float)0.015, (float)0.015, (float)0.015);
+            parent.transform.localScale = new Vector3((float)0.0155, (float)0.0155, (float)0.0155);
         }
     }
 }

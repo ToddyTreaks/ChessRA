@@ -51,7 +51,7 @@ public class PreviewBoard : MonoBehaviour
                 PreviewBoards[i, j] = preview;
             }
         }
-        parent.transform.localScale = new Vector3((float)0.015, (float)0.015, (float)0.015);
+        parent.transform.localScale = new Vector3((float)0.022, (float)0.022, (float)0.022);
     }
 
     public void ShowPos(List<Position> positions)

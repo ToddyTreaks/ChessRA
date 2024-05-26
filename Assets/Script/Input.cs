@@ -15,9 +15,9 @@ public class Input : MonoBehaviour
     private void Update()
     {
         if (!GameManager.Instance.canClick) return;
-        if (!UnityEngine.Input.GetMouseButtonDown(0)) return;
-        
-        Ray ray = _camera.ScreenPointToRay(UnityEngine.Input.mousePosition);
+        if (UnityEngine.Input.touchCount == 0) return;
+        Vector3 touchPosition = UnityEngine.Input.GetTouch(0).position;
+        Ray ray = _camera.ScreenPointToRay(touchPosition);
         if (Physics.Raycast(ray, out RaycastHit hitPreview, Mathf.Infinity, _previewLayer))
         {
             GameManager.Instance.MovePiece(hitPreview.collider.gameObject);
