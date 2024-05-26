@@ -10,7 +10,7 @@ namespace Script
     {
         public static GameManager Instance;
         
-        private bool playerTurn = false;
+        private bool playerTurn = true;
         private bool isAPieceSelected = false;
 
         private void Awake()
@@ -32,12 +32,6 @@ namespace Script
             // TODO : Si Piece.MovePiece() est possible alors bouger sa pièce
             // TODO : Changer Player
         }
-        
-        private void Turn(bool playerTurn)
-        {
-            this.playerTurn = !playerTurn;
-        }
-
         public void MovePiece(GameObject colliderGameObject)
         {
             Debug.Log("move");
@@ -50,6 +44,10 @@ namespace Script
 
         public void SelectPiece(GameObject colliderGameObject)
         {
+            //check if the piece team is corresponding to its turn
+            if (!playerTurn && colliderGameObject.GetComponent<Piece>().team == Team.WHITE || 
+                playerTurn && colliderGameObject.GetComponent<Piece>().team == Team.BLACK) return;
+            PreviewBoard.Instance.ClearPreview();
             Debug.Log("select");
             Position positionPiece = PhysicalBoard.Instance.WhatIsPosition(colliderGameObject);
             PhysicalBoard.Instance.selectedPosition = positionPiece;
@@ -57,7 +55,7 @@ namespace Script
             List<Position> everyPossiblePosition = CalculBoard._instance.MoveAllowed(positionPiece);
             List<Position> legalPosition = CalculBoard._instance.KingNotInCheck(positionPiece, everyPossiblePosition);
             Debug.Log(" number of possible posistions " + everyPossiblePosition.Count );
-            PreviewBoard.Instance.ShowPos(everyPossiblePosition);
+            PreviewBoard.Instance.ShowPos(legalPosition);
         }
 
         public void Nothing()

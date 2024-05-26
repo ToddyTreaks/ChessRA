@@ -119,20 +119,25 @@ namespace Script.Boards
             {
                 Pawn pawn = (Pawn)piece;
                 pawn.Promote();
-                
                 return;
             }
-            GameObject todie = Instance.Array[position.xIndex, position.yIndex];
-            if (!todie.IsUnityNull())
+            if(piece is Pawn)
             {
-                Debug.Log(todie + " " + todie.transform.position );
-                todie.SetActive(false);
+                Pawn pawn = (Pawn)piece;
+                if (pawn.firstMove)
+                    pawn.firstMove = false;
             }
             FastMove(position);
         }
 
         private void FastMove(Position position)
         {
+            GameObject todie = Instance.Array[position.xIndex, position.yIndex];
+            if (!todie.IsUnityNull())
+            {
+                Debug.Log(todie + " " + todie.transform.position );
+                todie.SetActive(false);
+            }
             parent.transform.localScale = new Vector3((float)1, (float)1, (float)1);
             Array[selectedPosition.xIndex, selectedPosition.yIndex].transform.position =
                 new Vector3(position.xIndex, 0, -position.yIndex);
